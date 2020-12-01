@@ -1,342 +1,274 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Menu from '../menu/Menu'; // Componente Menú (Lo he creado en la Parte 1 de este Tutorial) 
+import React, { useEffect, useState} from 'react';
+import axios from 'axios';
+import Menu from '../menu/Menu'; 
 import Footer from '../footer/Footer'; 
 import Header from '../header/Header';
-
-//mui form
-import Form from 'muicss/lib/react/form';
-import Input from 'muicss/lib/react/input';
-import Textarea from 'muicss/lib/react/textarea';
+import md5 from 'md5';
 
 
-import {
-  Table,
-  Container,
-  Modal,
-  Button,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "reactstrap"
+//material ui
+import MaterialTable from 'material-table';
+import {Modal, TextField, Button} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import EditSharpIcon from '@material-ui/icons/EditSharp';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import PresentToAllIcon from '@material-ui/icons/PresentToAll';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 
-const data = [
-  { id: 1, nombres: "Alexander", apellidos: "Hernandez Guzman", cargo: "Jefe", email:"Alexanderh@jtolm.com", fecha_creacion: "02-03-21", },
-  { id: 2, nombres: "Cecilia", apellidos: "Buendia", cargo: "Administrativa", email:"cbuendia@ght.com", fecha_creacion: "01-02-21",},
-  { id: 3, nombres: "Juan Andres", apellidos: "Caicedo Fuentes", cargo: "Auditor", email:"auditoriacmo@cmo.com", fecha_creacion: "01-01-21", },
-  { id: 4, nombres: "Eduardo", apellidos: "Rosales Gonzalez", cargo: "Admin", email:"edrogo@gty.com", fecha_creacion: "01-02-21", },
-  { id: 5, nombres: "Laura Angelica", apellidos: "Fernandez Aragon", cargo: "Jefe", email:"lauracmo@cmo.com", fecha_creacion: "02-04-21",},
+//<TextField className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.password} required/>
+//<br /><br />
+
+const columnas = [
+	{
+		title: 'ID',
+		field: 'id'
+
+	},
+	{
+		title: 'NOMBRES',
+		field: 'nombres'
+
+	},
+	{
+		title: 'APELLIDOS',
+		field: 'apellidos'
+
+  },
+  {
+		title: 'CARGO',
+		field: 'cargo'
+
+	},
+	{
+		title: 'USUARIO',
+		field: 'usuario'
+
+	},
+	{
+		title: 'CREADO',
+		field: 'fecha_creacion'
+	},
 ];
 
-class Listar extends React.Component {
-	state = {
-    data: data,
-    modalActualizar: false,
-    modalInsertar: false,
-    form: {
-      id: "",
-      nombres: "",
-      apellidos: "",
-      cargo: "",
-      email:"",
-      fecha_creacion: "",
-    },
-  };
+const baseUrl = "http://localhost:3001/user"
 
-  mostrarModalActualizar = (dato) => {
-    this.setState({
-      form: dato,
-      modalActualizar: true,
-    });
-  };
+const useStyles = makeStyles((theme) => ({
+	modal: {
+	  position: 'absolute',
+	  width: 400,
+	  backgroundColor: theme.palette.background.paper,
+	  border: '2px solid #000',
+	  boxShadow: theme.shadows[5],
+	  padding: theme.spacing(2, 4, 3),
+	  top: '50%',
+	  left: '50%',
+	  transform: 'translate(-50%, -50%)'
+	},
+	iconos:{
+	  cursor: 'pointer'
+  }, 
+  NativeSelect:{
+	  width: '100%'
+	},
+	inputMaterial:{
+	  width: '100%'
+  },
+  Button: {
+      margin: theme.spacing(1),
+  }
+  }));
 
-  cerrarModalActualizar = () => {
-    this.setState({ modalActualizar: false });
-  };
 
-  mostrarModalInsertar = () => {
-    this.setState({
-      modalInsertar: true,
-    });
-  };
 
-  cerrarModalInsertar = () => {
-    this.setState({ modalInsertar: false });
-  };
+function Usuarios() {
 
-  editar = (dato) => {
-    var contador = 0;
-    var arreglo = this.state.data;
-    arreglo.map((registro) => {
-      if (dato.id == registro.id) {
-        arreglo[contador].nombres = dato.nombres;
-        arreglo[contador].apellidos = dato.apellidos;
-        arreglo[contador].cargo = dato.cargo;
-        arreglo[contador].email = dato.email;
-        arreglo[contador].fecha_creacion = dato.fecha_creacion;
-      }
-      contador++;
-    });
-    this.setState({ data: arreglo, modalActualizar: false });
-  };
+  const styles= useStyles();
+  const [data, setData] = useState ([]);
+  const [modalInsertar, setModalInsertar]= useState(false);
+  const [modalEditar, setModalEditar]= useState(false);
+  const [usuarioSeleccionado, setUsuarioSeleccionado]=useState({
+    nombres: "",
+    apellidos: "", 
+    cargo:"",
+    usuario : "", 
+    password:"",
+    fecha_creacion: "", 
+  })  
 
-  eliminar = (dato) => {
-    var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento "+dato.id);
-    if (opcion == true) {
-      var contador = 0;
-      var arreglo = this.state.data;
-      arreglo.map((registro) => {
-        if (dato.id == registro.id) {
-          arreglo.splice(contador, 1);
-        }
-        contador++;
-      });
-      this.setState({ data: arreglo, modalActualizar: false });
-    }
-  };
-
-  insertar= ()=>{
-    var valorNuevo= {...this.state.form};
-    valorNuevo.id=this.state.data.length+1;
-    var lista= this.state.data;
-    lista.push(valorNuevo);
-    this.setState({ modalInsertar: false, data: lista });
+  const handleChange=e=>{
+    const {name, value}=e.target;
+    setUsuarioSeleccionado(prevState=>({
+      ...prevState,
+      [name]: value
+    }));
+  }
+	
+	const peticionGet =async()=>{
+		await axios.get(baseUrl)
+		.then(response=>{
+			setData(response.data);
+		}).catch(error=>{
+      console.log(error);
+    })
   }
 
-  handleChange = (e) => {
-    this.setState({
-      form: {
-        ...this.state.form,
-        [e.target.name]: e.target.value,
-      },
-    });
-  };
+  const peticionPost=async()=>{
+    await axios.post(baseUrl, usuarioSeleccionado,)
+    .then(response=>{
+      setData(data.concat(response.data));
+      abrirCerrarModalInsertar();
+    }).catch(error=>{
+      console.log(error);
+    })
+  }
 
-  render() {
-    
+  const peticionPut=async()=>{
+    await axios.put(baseUrl+"/"+usuarioSeleccionado.id, usuarioSeleccionado)
+    .then(response=>{
+      var dataNueva= data;
+      dataNueva.map(usuario=>{
+        if(usuario.id===usuarioSeleccionado.id){
+          usuario.nombres=usuarioSeleccionado.nombres;
+          usuario.apellidos=usuarioSeleccionado.apellidos;
+          usuario.cargo=usuarioSeleccionado.cargo;
+          usuario.usuario=usuarioSeleccionado.usuario;
+        }
+      });
+      setData(dataNueva);
+      abrirCerrarModalEditar();
+    }).catch(error=>{
+      console.log(error);
+    })
+  }
+
+  const seleccionarUsuario=(usuario)=>{
+    setUsuarioSeleccionado(usuario);
+    abrirCerrarModalEditar()
+  }
+  
+  const abrirCerrarModalInsertar=()=>{
+    setModalInsertar(!modalInsertar);
+  }
+
+  const abrirCerrarModalEditar=()=>{
+    setModalEditar(!modalEditar);
+  }
+
+  useEffect (()=>{
+		peticionGet();
+  }, [])
+  
+  const bodyInsertar=(
+    <div className={styles.modal}>
+      <h3 className="text-center col-md-12" >Nuevo Usuario</h3>
+      <br />
+      <br />
+      <TextField className={styles.inputMaterial} label="Nombres" name="nombres" onChange={handleChange} variant="outlined" color="primary" required/>
+      <br />
+      <br />
+      <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} variant="outlined" color="primary" required/>
+      <br />
+      <br />
+      <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} required>
+										<option value="" disabled>Seleccione Cargo</option>
+										<option value="ADMIN">ADMIN</option>
+                    <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+										<option value="JEFE">JEFE</option>
+			</NativeSelect>        
+      <br />
+      <br />
+	<TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" required/>
+		<br /><br />
+    <TextField type="password" className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" required/>
+		<br />
+    <br />
+  <label>Fecha Creacion</label>
+	<TextField type="date" className={styles.inputMaterial}  name="fecha_creacion" onChange={handleChange} variant="outlined" color="primary" required/>
+		<br />
+    <br />
+		<div align="right">
+			<Button className={styles.Button}  variant="contained" color="primary" onClick={()=>peticionPost()}><PresentToAllIcon/></Button>
+			<Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}><CancelIcon/></Button>
+		</div>
+		</div>
+  )
+  
+  const bodyEditar=(
+    <div className={styles.modal}>
+      <h3 className="text-center col-md-12">Modificar Usuario</h3>
+      <br />
+      <br />
+      <TextField className={styles.inputMaterial} label="Nombre Documento" name="nombres"  onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.nombres} required/>
+      <br />
+      <br />
+      <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.apellidos} variant="outlined" color="primary" required/>
+      <br />
+      <br />
+      <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.cargo} required>
+                    <option value="" disabled>Seleccione Cargo</option>
+										<option value="ADMIN">ADMIN</option>
+                    <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+										<option value="JEFE">JEFE</option>
+			</NativeSelect>        
+	<br />
+  <br />
+	<TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.usuario} required/>
+		<br /><br />
+
+		<div align="right">
+			<Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
+			<Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}><CancelIcon/></Button>
+		</div>
+		</div>
+	)
+
     return (
       <>
        <Menu /> 
        		<Header/>
-	       <div>
-      <Container>
-        <br />
-          <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Crear</Button>
-          <br />
-          <br />
-          <Table border='1'>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Cargo</th>
-                <th>Email</th>
-                <th>Creacion</th>
-                <th>Acción</th>      
-              </tr>
-            </thead>
-
-            <tbody>
-              {this.state.data.map((dato) => (
-                <tr key={dato.id}>
-                  <td>{dato.id}</td>
-                  <td>{dato.nombres}</td>
-                  <td>{dato.apellidos}</td>
-                  <td>{dato.cargo}</td>
-                  <td>{dato.email}</td>
-                  <td>{dato.fecha_creacion}</td>
-                  <td>
-                    <Button
-                      color="primary"
-                      onClick={() => this.mostrarModalActualizar(dato)}
-                    >
-                      Editar
-                    </Button>{" "}
-                    <Button color="danger" onClick={()=> this.eliminar(dato)}>Eliminar</Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-
-            <tfoot>
-              <tr>
-                <th>ID</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Cargo</th>
-                <th>Email</th>
-                <th>Creacion</th>
-                <th>Acción</th>    
-              </tr>
-            </tfoot>
-          </Table>
-        </Container>
-
-        <Modal isOpen={this.state.modalActualizar}>
-          <ModalHeader>
-           <div><h3>Editar Registro</h3></div>
-          </ModalHeader>
-
-          <ModalBody>
-            <Form >
-              <label>
-               Id:
-              </label>            
-              <input
-                className="form-control"
-                readOnly
-                type="text"
-                value={this.state.form.id}
-              />
-            </Form>
-            <Form>
-              <label>
-                Nombres: 
-              </label>
-              <input
-                className="form-control"
-                name="nombres"
-                type="text"
-                onChange={this.handleChange}
-                value={this.state.form.nombres}
-              />
-            </Form>
-            <Form>
-              <label>
-                Apellidos: 
-              </label>
-              <input
-                className="form-control"
-                name="apellidos"
-                type="text"
-                onChange={this.handleChange}
-                value={this.state.form.apellidos}
-              />
-            </Form>
-            <Form>
-              <label>
-                Cargo: 
-              </label>
-              <input
-                className="form-control"
-                name="cargo"
-                type="text"
-                onChange={this.handleChange}
-                value={this.state.form.cargo}
-              />
-            </Form>
-            <Form>
-              <label>
-                Email: 
-              </label>
-              <input
-                className="form-control"
-                name="email"
-                type="text"
-                onChange={this.handleChange}
-                value={this.state.form.email}
-              />
-            </Form>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              color="primary"
-              onClick={() => this.editar(this.state.form)}
-            >
-              Editar
-            </Button>
-            <br/>
-            <Button
-              color="danger"
-              onClick={() => this.cerrarModalActualizar()}
-            >
-              Cancelar
-            </Button>
-          </ModalFooter>
-        </Modal>
-
-
-
-        <Modal isOpen={this.state.modalInsertar}>
-          <ModalHeader>
-           <div><h3>Insertar Usuario</h3></div>
-          </ModalHeader>
-          <ModalBody>
-            <Form>     
-              <input
-                className="form-control"
-                placeholder="Id"
-                readOnly
-                type="text"
-                value={this.state.data.length+1}
-              />
-            </Form>
-            <br/>
-            <Form>
-              <input
-                className="form-control"
-                placeholder="Nombres"
-                name="nombres"
-                type="text"
-                onChange={this.handleChange}
-              />
-            </Form>
-            <br/>
-            <Form>
-              <input
-                className="form-control"
-                placeholder="Apellidos"
-                name="apellidos"
-                type="text"
-                onChange={this.handleChange}
-              />
-            </Form>
-            <br/>
-            <Form>
-              <input
-                className="form-control"
-                placeholder="Cargo"
-                name="cargo"
-                type="text"
-                onChange={this.handleChange}
-              />
-            </Form>
-            <br/>
-            <Form inline={true}>
-              <input
-              	placeholder="Email"
-              	className="form-control"
-                name="email"
-                type="text"
-                onChange={this.handleChange}
-              />
-            </Form>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              color="danger"
-              color="primary"
-              onClick={() => this.insertar()}
-            >
-              Insertar
-            </Button>
-            <Button
-              className="btn btn-danger"
-              onClick={() => this.cerrarModalInsertar()}
-            >
-              Cancelar
-            </Button>
-          </ModalFooter>
-        </Modal>
-
-	      	</div>
+           <div className="container">    
+                 <br/>
+				 <Button variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}><GroupAddIcon/></Button>
+				 <br/><br/>
+         	    <MaterialTable 
+         	    	columns = {columnas}
+                 data= {data}
+         	    	title = "Usuarios Ingresados"
+                    localization={{
+                        header: {
+                            actions: 'ACCION'
+                        },
+                    }} 
+                    options={{
+                        actionsColumnIndex: -1,
+                        }}    
+         	    	actions ={[
+                   {
+                    icon: () => <EditSharpIcon />, 
+                    tooltip: 'Editar',
+                    onClick: (event, rowData)=>seleccionarUsuario(rowData, "Editar")
+                  },
+         	    		]}
+         	    />                  
+                     
+                </div> 
       	<Footer />
+
+        <Modal
+        open={modalInsertar}
+        onClose={abrirCerrarModalInsertar}>
+          {bodyInsertar}
+        </Modal>
+
+        
+        <Modal
+        open={modalEditar}
+        onClose={abrirCerrarModalEditar}>
+          {bodyEditar}
+        </Modal>
       </>
     );
-  }
 }
-export default Listar;
+export default Usuarios;

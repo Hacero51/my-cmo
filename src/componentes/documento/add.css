@@ -14,3 +14,18 @@ form fieldset {
   align-content: center;
 }
 
+.dropzone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: #424242;
+  border-style: dashed;
+  background-color: #D8D8D8;
+  color: #bdbdbd;
+  outline: none;
+  transition: border .24s ease-in-out;
+}

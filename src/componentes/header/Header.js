@@ -1,23 +1,36 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
+const useStyles = makeStyles((theme) => ({
+	root: {
+	  '& > * + *': {
+		marginTop: theme.spacing(2),
+	  },
+	},
+  }));
+  
+  function handleClick(event) {
+	event.preventDefault();
+	console.info('You clicked a breadcrumb.');
+  }
 
+function Header() {
 
-
-class Header extends React.Component {
- 
- render() {
+	const classes = useStyles();
+	const [open, setOpen] = React.useState(true);
+  
+	const handleClick = () => {
+	  setOpen((prevOpen) => !prevOpen);
+	};
  
  return(
  
 	 <>
 	 <div>
-	    <br />
-	 	<div className="search">
-	 		<form className="input-group">
-			        <input className="form-control mr-sm-2"  type="text" placeholder="Buscar" aria-label="Buscar"/>
-			        <button className="btns btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-			 </form>
-	 	</div>
 	 	<div className="page-wrapper">
 	            <div className="container-fluid">
 	                <div className="row page-titles">
@@ -26,10 +39,18 @@ class Header extends React.Component {
 	                    </div>
 	                    <div className="col-md-7 align-self-center text-right">
 	                        <div className="d-flex justify-content-end align-items-center">
-	                            <ol className="breadcrumb">
-	                                <li className="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li><span>></span>
-	                                <li className="breadcrumb-item active"><a href="javascript:void(1)">Dashboard</a></li>
-	                            </ol>
+							<Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+								<Link color="inherit" href="/dashboard" onClick={handleClick}>
+								DAHSBOARD
+								</Link>
+								if { Link =="/usuarios"}.
+								then 
+								<Link color="inherit" href="/usuarios">
+								USUARIOS
+								if { Link =="/usuarios"}.
+								then <Link color="inherit" href="/documentos" ></Link>
+								</Link>
+							</Breadcrumbs>
 	                        </div>
 	                    </div>
 	                </div>
@@ -49,8 +70,6 @@ class Header extends React.Component {
 	 </>
  
  )
- 
- }
  
 }
  

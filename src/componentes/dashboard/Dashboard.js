@@ -1,9 +1,12 @@
 import React from 'react';
-import Menu from '../menu/Menu'; // Componente Menú (Lo he creado en la Parte 1 de este Tutorial) 
-import Footer from '../footer/Footer'; // Componente Footer (Lo he creado en la Parte 1 de este Tutorial)
+import Menu from '../menu/Menu'; 
+import Footer from '../footer/Footer'; 
 import Header from '../header/Header';
 
-
+//material ui
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 
 class Dashboard extends React.Component {
  
@@ -15,10 +18,10 @@ class Dashboard extends React.Component {
  
 	 <Menu /> 
          <Header/>
-                <div className="container">                      
-             
-                        <hr className="featurette-divider" />
-                </div>
+                <Container maxWidth="sm">
+                <hr className="featurette-divider" />
+                <Typography component="div" style={{ backgroundColor: '#fff', height: '85vh' }} />
+                </Container>
 	 <Footer />
 	 
  </>

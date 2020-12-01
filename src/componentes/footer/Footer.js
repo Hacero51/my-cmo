@@ -6,7 +6,7 @@ class Footer extends React.Component {
   render() {
  
     return (
-        <footer className="footer">
+        <footer className="footer" position="fixed">
             <p>&copy; {(new Date().getFullYear())} Cmo, Inc. &middot; <a href="https://clinicamatropolitanacmo.com/">Clinica Metropolitana</a> </p>
         </footer>
  

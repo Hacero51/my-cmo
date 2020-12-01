@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { useEffect, useState} from 'react';
+import axios from 'axios';
 import Menu from '../menu/Menu'; 
 import Footer from '../footer/Footer'; 
 import Header from '../header/Header';
@@ -7,21 +7,92 @@ import Header from '../header/Header';
 //css propio
 import './add.css';
 
+import {useDropzone} from 'react-dropzone'
 
+//material ui
+import NativeSelect from '@material-ui/core/NativeSelect';
+import {makeStyles} from '@material-ui/core/styles';
+import {TextField} from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 //mui form
 import Form from 'muicss/lib/react/form';
-import Input from 'muicss/lib/react/input';
-import Textarea from 'muicss/lib/react/textarea';
-import Button from 'muicss/lib/react/button';
-import Option from 'muicss/lib/react/option';
-import Select from 'muicss/lib/react/select';
 
 
+const useStyles = makeStyles((theme) => ({
+	root: {
+		'& > *': {
+		  margin: theme.spacing(1),
+		  width: '25ch',
+		},
+	},
+	cuadros: {
+		width: 100,
+		border: '1px solid #000',
+		padding: theme.spacing(2, 4, 3),
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)'
+	  },
+	iconos:{
+	  cursor: 'pointer'
+	}, 
+	NativeSelect:{
+	  width: '100%'
+	},
+	inputMaterial:{
+		width: '100%'
+	},
+	TextareaAutosize:{
+		width: '100%'
+	}
+}));
 
-class Add extends React.Component {
+const baseUrl = "http://localhost:3001/documento"
 
-	render() {
+function Add (props) {
+
+	const styles= useStyles();
+	const [data, setData] = useState ([]);
+
+	const [documentoSeleccionado, setDocumentoSeleccionado]=useState({
+		nombre_documento: "",
+		tipo_documento: "", 
+		descripcion: "",
+		archivo:"",
+		
+	  })  
+	
+	const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
+		maxFiles:1,
+		maxSize:5000000, 
+		accept: '.jpg,.pptx,.odp,.odt,.ods,.odg,image/png,image/jpeg,.pdf,.xlsx,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+	  });
+  
+	const archivo = acceptedFiles.map(archivo => (
+	  <li key={archivo.path}>
+		{archivo.path} - {archivo.size} bytes
+	  </li>
+	));
+
+	const handleChange=e=>{
+		const {name, value}=e.target;
+		setDocumentoSeleccionado(prevState=>({
+		  ...prevState,
+		  [name]: value
+		}));
+	  }
+
+	  const peticionPost=async()=>{
+		await axios.post(baseUrl, documentoSeleccionado)
+		.then(response=>{
+		  setData(data.concat(response.data));
+		}).catch(error=>{
+		  console.log(error);
+		})
+	  }  
 
 return(
  
@@ -31,41 +102,55 @@ return(
          	    <div className="container">
 	         	    <br />
 	         	    <div>
-		         	    <Form className="row" >  		    
-							      <div className="text-center col-md-12"><h3>Ingresar Documento</h3></div>   
-							      <div className="form-group col-md-4"> 
-							     	<label for="nombre">Nombre del Documento</label>
-							        <Input placeholder="Nombre del Documento" className="form-control" name="nombre_documento"/>
+					 <div className="text-center col-md-12"><h3>INGRESO DE DOCUMENTO</h3></div>
+					 <br/>
+					<br/>   
+		         	    <Form className="row" >  		    					  
+							      <div className="form-group col-md-6"> 
+									<TextField className={styles.inputMaterial} label="Nombre del Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary" required/>
 							      </div>  
 							        <br />
-							  	 <div className="form-group col-md-4">
-							     	<label for="nombre">Consecutivo</label>
-							        <Input placeholder="consecutivo" className="form-control" name="consecutivo"/>
+									<div className="form-group col-md-6"> 
+								   <TextField className={styles.TextareaAutosize} label="Descripcion" name="descripcion" variant="outlined" multiline rows={2} onChange={handleChange} color="primary" required/>
 							      </div> 
-							        <br />
-							      <div className="form-group col-md-4"> 
-							     	<label for="nombre">Tipo de Documento</label>
-								     	 < Select  name = "tipo_documento" defaultValue="pdf"> 
-										  <option value="pdf">PDF</option>
-								          <option value="excel">Excel</option>
-								          <option value="ppt">Power Point</option>
-								          <option value="word">Word</option>
-								          <option value="jpg">Jpg</option>
-								        </Select>   
-							      </div> 
-							       <br/>
-							       <div className="form-group col-md-4"> 
-							     	<label for="nombre">Descripcion</label>
-							       <Input placeholder="descripcion" className="form-control" name="descripcion"/>
+							      <div className="form-group col-md-6"> 
+							     	<label >Tipo de Documento</label> 
+										<NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} required>
+										<option value="" disabled>Seleccione</option>
+										<option value="pdf">PDF</option>
+										<option value="excel">Excel</option>
+										<option value="ppt">Power Point</option>
+										<option value="word">Word</option>
+										<option value="imagen">Imagen</option>
+										</NativeSelect>
 							      </div> 
 							       <br/>
-							       <div className="form-group col-md-4"> 
-							     	<label for="nombre">archivo</label>
-							       <Input type="file" placeholder="archivo" name="archivo"/>
-							      </div> 
 							       <br/>
-							        <Button variant="raised">Enviar</Button>  	
-
+									<div className="form-group col-md-6"> 
+											<div {...getRootProps({className: 'dropzone'})}>
+												<input {...getInputProps()}  name='archivo' onChange={handleChange} required/>
+												<p>Arrastre y suelte el archivo aquí, o haga clic para seleccionar el archivo</p>
+												<em>(Solo *.jpg y *.png son el tipo de Imagenes aceptadas)
+												(Solo *.pdf,*.pptx,.xlsx,.doc son los tipos de Documentos aceptadas)</em>
+											</div>
+											<aside>
+												<ul>file</ul>
+												<ul>{archivo}</ul>
+											</aside>		
+							       </div> 
+								   <div className="form-group col-md-12"> 
+							      </div>
+								  <br/>
+								  <div className="form-group col-md-12"> 
+							      </div>
+								  <br/>
+								   <div className="form-group col-md-6">
+							        <Button variant="contained" color="primary" size="large" onClick={()=>peticionPost()} startIcon={<SaveIcon />}>Guardar</Button>  	
+									</div>
+									<br/>
+								   <div className="form-group col-md-6">
+							        <Button variant="contained" color="secondary" size="large" startIcon={<CancelIcon />}>Cancelar</Button>  	
+									</div>			
 						</Form> 
 				      <br/>
 				    </div>  
@@ -76,8 +161,6 @@ return(
  )
  
  }
- 
-}
  
 export default Add;
 

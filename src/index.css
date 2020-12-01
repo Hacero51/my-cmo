@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-thead {
+thead{
     display: table-header-group;
     vertical-align: middle;
     border-color: inherit;
@@ -26,6 +26,7 @@ tbody {
     border-color: inherit;
     text-align: center;
     align-content: center;
+    background-color: #fff
 }
 
 tfoot {
@@ -12096,7 +12097,7 @@ Main sidebar
 sidebar navigation
 ******************/
 .scroll-sidebar {
-  height: calc(100% * 1.2);
+  height: calc(100% *1.49);
   position: relative;
   background-color: #2b2f3a;
   /*&.ps .ps__scrollbar-y-rail {
