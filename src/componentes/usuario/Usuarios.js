@@ -1,4 +1,6 @@
 import React, { useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import Menu from '../menu/Menu'; 
 import Footer from '../footer/Footer'; 
@@ -77,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
   Button: {
       margin: theme.spacing(1),
+      cursor: 'pointer',
   }
   }));
 
@@ -84,6 +87,13 @@ const useStyles = makeStyles((theme) => ({
 
 function Usuarios() {
 
+  const notifysuccessEditar = () => {
+    toast.success('Se Han Guardado Las Modificaciones')
+  } 
+  
+  const notifysuccessInsertar = () => {
+    toast.success('Se Ha Ingresado Un Nuevo Usuario')
+  } 
   const styles= useStyles();
   const [data, setData] = useState ([]);
   const [modalInsertar, setModalInsertar]= useState(false);
@@ -162,6 +172,9 @@ function Usuarios() {
   
   const bodyInsertar=(
     <div className={styles.modal}>
+      <div align="right" >
+      <CancelIcon className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}/>
+      </div>
       <h3 className="text-center col-md-12" >Nuevo Usuario</h3>
       <br />
       <br />
@@ -184,19 +197,17 @@ function Usuarios() {
     <TextField type="password" className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" required/>
 		<br />
     <br />
-  <label>Fecha Creacion</label>
-	<TextField type="date" className={styles.inputMaterial}  name="fecha_creacion" onChange={handleChange} variant="outlined" color="primary" required/>
-		<br />
-    <br />
-		<div align="right">
+		<div align="center"  onClick={notifysuccessInsertar}>
 			<Button className={styles.Button}  variant="contained" color="primary" onClick={()=>peticionPost()}><PresentToAllIcon/></Button>
-			<Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}><CancelIcon/></Button>
 		</div>
 		</div>
   )
   
   const bodyEditar=(
     <div className={styles.modal}>
+      <div align="right">
+      <CancelIcon className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}/>
+      </div>
       <h3 className="text-center col-md-12">Modificar Usuario</h3>
       <br />
       <br />
@@ -217,9 +228,8 @@ function Usuarios() {
 	<TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.usuario} required/>
 		<br /><br />
 
-		<div align="right">
+		<div align="center" onClick={notifysuccessEditar}>
 			<Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
-			<Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}><CancelIcon/></Button>
 		</div>
 		</div>
 	)

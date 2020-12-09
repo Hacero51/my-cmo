@@ -1,13 +1,20 @@
 import React, { useEffect, useState} from 'react';
-
+import { NavLink } from 'react-router-dom';
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import Menu from '../menu/Menu'; 
 import Footer from '../footer/Footer'; 
 import Header from '../header/Header';
+import View from '../view/View';
+
+
+
 
 //material ui
 import MaterialTable from 'material-table';
 import {Modal, TextField, Button} from '@material-ui/core';
+import grey from '@material-ui/core/colors/grey';
 import {makeStyles} from '@material-ui/core/styles';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -16,6 +23,8 @@ import ModeCommentIcon from '@material-ui/icons/ModeComment';
 import PresentToAllIcon from '@material-ui/icons/PresentToAll';
 import CancelIcon from '@material-ui/icons/Cancel';
 
+//mui form
+import Form from 'muicss/lib/react/form';
 
 const columnas = [
 	{
@@ -79,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
 	  transform: 'translate(-50%, -50%)'
 	},
 	iconos:{
-	  cursor: 'pointer'
+    cursor: 'pointer',
   }, 
   NativeSelect:{
 	  width: '100%'
@@ -90,28 +99,47 @@ const useStyles = makeStyles((theme) => ({
   },
   Button: {
       margin: theme.spacing(1),
+      cursor: 'pointer',
+  },
+  archivo: {
+    position: 'absolute',
+    width: 900,
+    height:580,
+	  backgroundColor: theme.palette.background.paper,
+	  border: '1px solid #000',
+	  boxShadow: theme.shadows[3],
+	  padding: theme.spacing(2, 4, 3),
+	  top: '52%',
+	  left: '50%',
+	  transform: 'translate(-50%, -50%)'
   }
   }));
 
- 
-	
-	function Documentos () {
+function Documentos() {
 
+ 
+    const notifysuccessEditar = () => {
+      toast.success('Se Han Guardado Las Modificaciones')
+    }  
+ 
   const styles= useStyles();
   const [data, setData] = useState ([]);
-  const [modalInsertar, setModalInsertar]= useState(false);
   const [modalEditar, setModalEditar]= useState(false);
   const [modalDescripcion, setModalDescripcion]= useState(false);
+  const [modalArchivo, setModalArchivo]= useState(false);
   const [documentoSeleccionado, setDocumentoSeleccionado]=useState({
     nombre_documento: "",
     tipo_documento: "", 
     descripcion:"",
+    archivo:"",
     fecha_ingreso : "", 
     fecha_visualizacion: "", 
     accesos:"", 
     users_id: ""
   })  
 
+  
+  
 	
   const handleChange=e=>{
     const {name, value}=e.target;
@@ -120,25 +148,15 @@ const useStyles = makeStyles((theme) => ({
       [name]: value
     }));
   }
-	
-	const peticionGet =async()=>{
-		await axios.get(baseUrl)
-		.then(response=>{
-			setData(response.data);
-		}).catch(error=>{
-      console.log(error);
-    })
-  }
-
-  const peticionPost=async()=>{
-    await axios.post(baseUrl, documentoSeleccionado)
-    .then(response=>{
-      setData(data.concat(response.data));
-      abrirCerrarModalInsertar();
-    }).catch(error=>{
-      console.log(error);
-    })
-  }
+  
+    const peticionGet =async(props)=>{
+      await axios.get(baseUrl)
+      .then(response=>{
+        setData(response.data);
+      }).catch(error=>{
+        console.log(error);
+      })
+    }
 
   const peticionPut=async()=>{
     await axios.put(baseUrl+"/"+documentoSeleccionado.id, documentoSeleccionado)
@@ -172,11 +190,13 @@ const useStyles = makeStyles((theme) => ({
 
     :abrirCerrarModalDescripcion() 
   }
-  
-  const abrirCerrarModalInsertar=()=>{
-    setModalInsertar(!modalInsertar);
-  }
+  const seleccionarArchivo=(documento, caso)=>{
+    setDocumentoSeleccionado(documento);
+    (caso==="Ver Documento")?abrirCerrarModalArchivo()
 
+    :abrirCerrarModalArchivo() 
+  }
+  
   const abrirCerrarModalEditar=()=>{
     setModalEditar(!modalEditar);
   }
@@ -185,87 +205,66 @@ const useStyles = makeStyles((theme) => ({
     setModalDescripcion(!modalDescripcion);
   }
 
+  const abrirCerrarModalArchivo=()=>{
+    setModalArchivo(!modalArchivo);
+  }
+
 	useEffect (()=>{
 		peticionGet();
 	}, [])
-
-  const bodyInsertar=(
-    <div className={styles.modal}>
-      <h3 className="text-center col-md-12" >Nuevo Documento</h3>
-      <br />
-      <br />
-      <TextField className={styles.inputMaterial} label="Nombre Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary" required/>
-      <br />
-      <br />
-      <NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} required>
-										<option value="" disabled>Seleccione Tipo Documento</option>
-										<option value="excel">Excel</option>
-                    <option value="pdf">PDF</option>
-										<option value="ppt">Power Point</option>
-										<option value="word">Word</option>
-										<option value="imagen">Imagen</option>
-			</NativeSelect>        
-	<br />
-  <br />
-  <label>Fecha Ingreso</label>
-	<TextField type="date" className={styles.inputMaterial}  name="fecha_ingreso" onChange={handleChange} variant="outlined" color="primary" required/>
-		<br />
-    <br />
-  <label>Fecha Visualizacion</label>
-	<TextField type="date" className={styles.inputMaterial} name="fecha_visualizacion" onChange={handleChange} variant="outlined" color="primary" required/>
-  <br />
-  <br />
-	<TextField className={styles.inputMaterial} label="Accesos" name="accesos" onChange={handleChange} variant="outlined" color="primary" required/>
-  <br />
-  <br />
-	<TextField className={styles.inputMaterial} label="Ingresado Por" name="users_id" onChange={handleChange} variant="outlined" color="primary" required/>
-		<br /><br />
-
-		<div align="right">
-			<Button className={styles.Button}  variant="contained" color="primary" onClick={()=>peticionPost()}><PresentToAllIcon/></Button>
-			<Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}><CancelIcon/></Button>
-		</div>
-		</div>
-  )
   
   const bodyEditar=(
+     <Form className="row" > 
     <div className={styles.modal}>
+    <div align="right">
+      <CancelIcon className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()} />
+     </div>
       <h3 className="text-center col-md-12">Modificar Documento</h3>
+          <br />
+          <br />
+          <TextField className={styles.inputMaterial} label="Nombre Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.nombre_documento} required/>
+          <br />
+          <br />
+          <NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} value={documentoSeleccionado&&documentoSeleccionado.tipo_documento} required>
+                        <option value="" disabled>Seleccione Tipo Documento</option>
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="ppt">Power Point</option>
+                        <option value="word">Word</option>
+                        <option value="jpg">Jpg</option>
+          </NativeSelect>        
       <br />
       <br />
-      <TextField className={styles.inputMaterial} label="Nombre Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.nombre_documento} required/>
-      <br />
-      <br />
-      <NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} value={documentoSeleccionado&&documentoSeleccionado.tipo_documento} required>
-										<option value="" disabled>Seleccione Tipo Documento</option>
-										<option value="pdf">PDF</option>
-										<option value="excel">Excel</option>
-										<option value="ppt">Power Point</option>
-										<option value="word">Word</option>
-										<option value="jpg">Jpg</option>
-			</NativeSelect>        
-	<br />
-  <br />
-	<TextField className={styles.inputMaterial} label="Descripcion" name="descripcion" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.descripcion} required/>
-		<br /><br />
-		<div align="right">
-			<Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
-			<Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}><CancelIcon/></Button>
-		</div>
-		</div>
+      <TextField className={styles.inputMaterial} label="Descripcion" name="descripcion" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.descripcion} required/>
+        <br /><br />
+        <div align="center" onClick={notifysuccessEditar}>
+          <Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
+        </div>       
+      </div>
+    </Form>  
 	)
 
   const bodyDescripcion=(
     <div className={styles.modal}>
       <div align="right">
-        <Button variant="contained" color="secondary"  onClick={()=>abrirCerrarModalDescripcion()}><CancelIcon/></Button>
+        <CancelIcon className={styles.Button} variant="contained" color="secondary"  onClick={()=>abrirCerrarModalDescripcion()}/>
       </div>
       <br />
       <label>Descripcion</label>
 	   <TextField className={styles.inputMaterial}  name="descripcion" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado.descripcion} disabled/>
 		<br /><br />
+    </div>
+  )
+
+  const bodyArchivo=(
+    <div className={styles.archivo}>
+      <div align="right">
+        <CancelIcon className={styles.Button} variant="contained" color="secondary"  onClick={()=>abrirCerrarModalArchivo()}/>
+      </div>
+      <br />
     <div>
-                    <embed src={documentoSeleccionado.archivo}  type="application/pdf" accept= '.jpg,.pptx,.odp,.odt,.ods,.odg,image/png,image/jpeg,.pdf,.xlsx,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document' width="100%" height="600px" />
+        <embed src={documentoSeleccionado.archivo}  type="application/pdf" accept= '.jpg,.pptx,.odp,.odt,.ods,.odg,image/png,image/jpeg,.pdf,.xlsx,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document' width="850px" height="500px" label="No se puede visualizar este tipo de archivo."/>
+        <br />       
     </div>
   
     </div>
@@ -277,8 +276,6 @@ return(
 	 	 <Menu /> 
          	<Header/>
          	    <div className="container">    
-                 <br/>
-				 <Button variant="contained" color="secondary"  onClick={()=>abrirCerrarModalInsertar()}>Insertar Documento</Button>
 				 <br/><br/>
          	    <MaterialTable 
          	    	columns = {columnas}
@@ -299,9 +296,9 @@ return(
                     onClick: (event, rowData)=>seleccionarDescripcion(rowData,"Descripcion")
                   },
                   {
-         	    			icon:() => <VisibilityIcon />,
+         	    			icon:() => <NavLink to="/view"><VisibilityIcon style={{ color: grey[900]}}/></NavLink>,
          	    			tooltip: 'Ver Documento',
-         	    			onClick: (event, rowData)=>window.confirm('Desea Ver el Documento :'+rowData.id+'?')
+         	    			onClick: (event, rowData)=>seleccionarArchivo(rowData,"Ver Documento")
                    },
                    {
                     icon: () => <EditSharpIcon />, 
@@ -312,25 +309,21 @@ return(
          	    />                  
                      
                 </div>
-          <Footer />	
-
-		    <Modal
-        open={modalInsertar}
-        onClose={abrirCerrarModalInsertar}>
-          {bodyInsertar}
-        </Modal>
-
-        
+          <Footer />	      
         <Modal
         open={modalEditar}
         onClose={abrirCerrarModalEditar}>
           {bodyEditar}
         </Modal>
-
         <Modal
         open={modalDescripcion}
         onClose={abrirCerrarModalDescripcion}>
           {bodyDescripcion}
+        </Modal>
+        <Modal
+        open={modalArchivo}
+        onClose={abrirCerrarModalArchivo}>
+          {bodyArchivo}
         </Modal>
 
 	</>
@@ -339,4 +332,7 @@ return(
   
 }
  
+
+
+
 export default Documentos;

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import './index.css';
 import { BrowserRouter, BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -14,15 +15,12 @@ import Login from './componentes/login/Login';
 import Usuarios from './componentes/usuario/Usuarios'; 
 import Documentos from './componentes/documento/Documentos';
 import Add from './componentes/documento/Add';
-import View from './componentes/view/view';
-import Users from './componentes/usuario/Users'; 
-
+import View from './componentes/view/View';
 
 ReactDOM.render(
 		<Router>
 				 <BrowserRouter>
-					<Switch>
-				
+					<Switch>				
 						{/* Páginas */}
 						<Route exact path='/' component={Login} />
 						<Route exact path='/dashboard' component={Dashboard} />   
@@ -30,7 +28,6 @@ ReactDOM.render(
 						<Route exact path='/documentos' component={Documentos} />
 						<Route exact path='/add' component={Add} />
 						<Route exact path='/view' component={View} />
-						<Route exact path='/users' component={Users} />
 					</Switch>
 				  </BrowserRouter>
 	    </Router>,

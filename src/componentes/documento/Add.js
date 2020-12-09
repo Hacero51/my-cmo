@@ -1,4 +1,6 @@
-import React, { useEffect, useState} from 'react';
+import React, { useState} from 'react';
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import Menu from '../menu/Menu'; 
 import Footer from '../footer/Footer'; 
@@ -6,14 +8,17 @@ import Header from '../header/Header';
 
 //css propio
 import './add.css';
-
+//file
 import {useDropzone} from 'react-dropzone'
 
 //material ui
-import NativeSelect from '@material-ui/core/NativeSelect';
 import {makeStyles} from '@material-ui/core/styles';
+
+import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import {TextField} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -52,10 +57,16 @@ const useStyles = makeStyles((theme) => ({
 
 const baseUrl = "http://localhost:3001/documento"
 
-function Add (props) {
+
+toast.configure()
+function Add () {
 
 	const styles= useStyles();
 	const [data, setData] = useState ([]);
+
+	const notifysuccess = () => {
+		toast.success('El Archivo Ha Sido Ingresado')
+	}
 
 	const [documentoSeleccionado, setDocumentoSeleccionado]=useState({
 		nombre_documento: "",
@@ -89,8 +100,10 @@ function Add (props) {
 		await axios.post(baseUrl, documentoSeleccionado)
 		.then(response=>{
 		  setData(data.concat(response.data));
+		   window.location.href="/documentos";
 		}).catch(error=>{
 		  console.log(error);
+		  window.location.href="/documentos";
 		})
 	  }  
 
@@ -144,12 +157,12 @@ return(
 								  <div className="form-group col-md-12"> 
 							      </div>
 								  <br/>
-								   <div className="form-group col-md-6">
-							        <Button variant="contained" color="primary" size="large" onClick={()=>peticionPost()} startIcon={<SaveIcon />}>Guardar</Button>  	
+								   <div className="form-group col-md-6" onClick={notifysuccess}>
+							        <Button variant="contained" color="primary" size="large"  onClick={()=>peticionPost()} startIcon={<SaveIcon />}>Guardar</Button>  	
 									</div>
 									<br/>
 								   <div className="form-group col-md-6">
-							        <Button variant="contained" color="secondary" size="large" startIcon={<CancelIcon />}>Cancelar</Button>  	
+							        <Button variant="contained" color="secondary" size="large"  startIcon={<CancelIcon />}>Cancelar</Button>  	
 									</div>			
 						</Form> 
 				      <br/>

@@ -1,8 +1,7 @@
 import React from 'react';
 import './Login.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { faLock } from '@fortawesome/free-solid-svg-icons'
+import PersonIcon from '@material-ui/icons/Person';
+import LockIcon from '@material-ui/icons/Lock';
 
 //inicio sesion
 import axios from 'axios';
@@ -76,14 +75,14 @@ class Login extends React.Component {
 								<input className="input100" type="text" name="usuario" placeholder="Usuario" onChange={this.handleChange}></input>
 								<span className="focus-input100"></span>
 								<span className="symbol-input100">
-									<FontAwesomeIcon icon={faUser} />
+									<PersonIcon/>
 								</span>
 							</div>
 							<div className="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
 								<input className="input100" type="password" name="password" placeholder="Contraseña" onChange={this.handleChange}></input>
 								<span className="focus-input100"></span>
 								<span className="symbol-input100">
-									<FontAwesomeIcon icon={faLock} />
+									<LockIcon/>
 								</span>
 							</div>
 
