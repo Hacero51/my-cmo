@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import GroupIcon from '@material-ui/icons/Group';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import DnsTwoToneIcon from '@material-ui/icons/DnsTwoTone';
 import DescriptionIcon from '@material-ui/icons/Description';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
@@ -94,12 +95,12 @@ function Menu() {
 										<Grid item xs={1}>
 										</Grid>
 										<Grid item xs={9}>
-										<li> <a className="waves-effect waves-dark" href="/documentos" aria-expanded="false"><span className="hide-menu"></span><Typography><h6 className="menu">Documentos</h6></Typography></a></li>
+										<li> <a className="waves-effect waves-dark" href="/documents" aria-expanded="false"><span className="hide-menu"></span><Typography><h6 className="menu">Documentos</h6></Typography></a></li>
 											
 										</Grid>
 										<Grid item xs={30}>
-										<a className="waves-effect waves-dark" href="/documentos" aria-expanded="false">	
-										<DescriptionIcon style={{ color: grey[50] }}/>
+										<a className="waves-effect waves-dark" href="/documents" aria-expanded="false">	
+										<DnsTwoToneIcon style={{ color: grey[50] }}/>
 										</a>
 										</Grid>
 										<br />
@@ -126,7 +127,29 @@ function Menu() {
 										<ExitToAppRoundedIcon style={{ color: grey[50] }}/>
 										</a>
 										</Grid>
-							</Grid>			
+										<Grid item xs={1}>
+										</Grid>
+										<Grid item xs={9}>		
+										</Grid>
+										<Grid item xs={30}>
+										</Grid>
+										
+										
+							</Grid>
+							<br/><br/>
+							<br/>
+							<br/>
+							<br/><br/>	
+							<br/>
+							<br/><br/>	
+							<br/>
+							<br/><br/>	
+							<br/>
+							<div>	
+								<p>&copy; {(new Date().getFullYear())} Cmo, IPS. &middot; <a href="https://clinicamatropolitanacmo.com/">Clinica Metropolitana</a> </p>		
+							</div>
+
+							
 	                </nav>
 
 	            </div>

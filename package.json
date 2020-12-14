@@ -28,9 +28,11 @@
     "react-swipeable-views": "^0.13.9",
     "react-through": "^1.1.4",
     "react-toast-component": "^1.4.13",
-    "react-toastify": "^6.1.0",
+    "react-toastify": "^6.2.0",
+    "simple-react-validator": "^1.6.0",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "yup": "^0.32.8"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -8,7 +8,7 @@ import axios from 'axios';
 import md5 from 'md5';
 import Cookies from 'universal-cookie';
 
-const baseUrl="http://localhost:3001/user";
+const baseUrl="http://localhost:3001/user";							
 const cookies = new Cookies();
 
 

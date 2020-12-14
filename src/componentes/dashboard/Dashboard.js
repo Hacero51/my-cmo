@@ -1,6 +1,5 @@
 import React from 'react';
 import Menu from '../menu/Menu'; 
-import Footer from '../footer/Footer'; 
 import Header from '../header/Header';
 
 //material ui
@@ -44,7 +43,7 @@ const tutorialSteps = [
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 1000,
+    maxWidth: 900,
     flexGrow: 1,
   },
   header: {
@@ -55,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
   },
   img: {
-    height: 700,
+    height: 475,
     display: 'block',
     maxWidth: 700,
     overflow: 'hidden',
@@ -126,7 +125,6 @@ function Dashboard() {
                      />
               </div>
                 </Container>
-	 <Footer />
 	 
  </>
  

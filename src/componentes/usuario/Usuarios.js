@@ -1,26 +1,25 @@
 import React, { useEffect, useState} from 'react';
-import {toast} from 'react-toastify';
+import {ToastContainer,toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import Menu from '../menu/Menu'; 
-import Footer from '../footer/Footer'; 
+import Menu from '../menu/Menu';  
 import Header from '../header/Header';
 import md5 from 'md5';
 
 
 //material ui
 import MaterialTable from 'material-table';
-import {Modal, TextField, Button} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+
+import {Modal, TextField, Button} from '@material-ui/core';
 import NativeSelect from '@material-ui/core/NativeSelect';
+
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import PresentToAllIcon from '@material-ui/icons/PresentToAll';
 import CancelIcon from '@material-ui/icons/Cancel';
 
 
-//<TextField className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.password} required/>
-//<br /><br />
 
 const columnas = [
 	{
@@ -199,7 +198,8 @@ function Usuarios() {
     <br />
 		<div align="center"  onClick={notifysuccessInsertar}>
 			<Button className={styles.Button}  variant="contained" color="primary" onClick={()=>peticionPost()}><PresentToAllIcon/></Button>
-		</div>
+		<ToastContainer />
+    </div>
 		</div>
   )
   
@@ -227,8 +227,8 @@ function Usuarios() {
   <br />
 	<TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.usuario} required/>
 		<br /><br />
-
 		<div align="center" onClick={notifysuccessEditar}>
+    <ToastContainer />
 			<Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
 		</div>
 		</div>
@@ -264,7 +264,6 @@ function Usuarios() {
          	    />                  
                      
                 </div> 
-      	<Footer />
 
         <Modal
         open={modalInsertar}

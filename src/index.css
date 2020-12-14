@@ -12097,7 +12097,7 @@ Main sidebar
 sidebar navigation
 ******************/
 .scroll-sidebar {
-  height: calc(100% *1.49);
+  height: calc(100% *1.1);
   position: relative;
   background-color: #2b2f3a;
   /*&.ps .ps__scrollbar-y-rail {

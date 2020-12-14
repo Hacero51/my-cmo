@@ -1,10 +1,9 @@
 import React, { useEffect, useState} from 'react';
 import { NavLink } from 'react-router-dom';
-import {toast} from 'react-toastify';
+import {ToastContainer,toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import Menu from '../menu/Menu'; 
-import Footer from '../footer/Footer'; 
 import Header from '../header/Header';
 import View from '../view/View';
 
@@ -13,10 +12,12 @@ import View from '../view/View';
 
 //material ui
 import MaterialTable from 'material-table';
-import {Modal, TextField, Button} from '@material-ui/core';
-import grey from '@material-ui/core/colors/grey';
 import {makeStyles} from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
+
+import {Modal, TextField, Button} from '@material-ui/core';
 import NativeSelect from '@material-ui/core/NativeSelect';
+
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import ModeCommentIcon from '@material-ui/icons/ModeComment';
@@ -43,11 +44,6 @@ const columnas = [
 		field: 'tipo_documento'
 
   },
-  {
-		title: 'Archivo',
-		field: 'archivo'
-
-	},
 	{
 		title: 'Fecha Ingreso',
     field: 'fecha_ingreso',
@@ -74,6 +70,8 @@ const columnas = [
 ];
 
 const baseUrl = "http://localhost:3001/documento"
+
+const Folder = "DOCUMENTOS DE ACTAS ADMINISTRATIVAS INGRESADOS";
 
 const useStyles = makeStyles((theme) => ({
 	modal: {
@@ -138,9 +136,6 @@ function Documentos() {
     users_id: ""
   })  
 
-  
-  
-	
   const handleChange=e=>{
     const {name, value}=e.target;
     setDocumentoSeleccionado(prevState=>({
@@ -238,6 +233,7 @@ function Documentos() {
       <TextField className={styles.inputMaterial} label="Descripcion" name="descripcion" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.descripcion} required/>
         <br /><br />
         <div align="center" onClick={notifysuccessEditar}>
+        <ToastContainer />
           <Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
         </div>       
       </div>
@@ -249,9 +245,8 @@ function Documentos() {
       <div align="right">
         <CancelIcon className={styles.Button} variant="contained" color="secondary"  onClick={()=>abrirCerrarModalDescripcion()}/>
       </div>
-      <br />
-      <label>Descripcion</label>
-	   <TextField className={styles.inputMaterial}  name="descripcion" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado.descripcion} disabled/>
+      <label>DESCRIPCION</label>
+	   <TextField className={styles.inputMaterial}  name="descripcion" onChange={handleChange} variant="outlined" color="secondary"  value={documentoSeleccionado.descripcion} disabled/>
 		<br /><br />
     </div>
   )
@@ -280,7 +275,7 @@ return(
          	    <MaterialTable 
          	    	columns = {columnas}
                  data= {data}
-         	    	title = "DOCUMENTOS INGRESADOS"
+         	    	title = {Folder}
                     localization={{
                         header: {
                             actions: 'ACCIONES'
@@ -296,7 +291,7 @@ return(
                     onClick: (event, rowData)=>seleccionarDescripcion(rowData,"Descripcion")
                   },
                   {
-         	    			icon:() => <NavLink to="/view"><VisibilityIcon style={{ color: grey[900]}}/></NavLink>,
+         	    			icon:() => <VisibilityIcon />,
          	    			tooltip: 'Ver Documento',
          	    			onClick: (event, rowData)=>seleccionarArchivo(rowData,"Ver Documento")
                    },
@@ -309,7 +304,6 @@ return(
          	    />                  
                      
                 </div>
-          <Footer />	      
         <Modal
         open={modalEditar}
         onClose={abrirCerrarModalEditar}>

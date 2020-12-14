@@ -1,10 +1,16 @@
 import React, { useState} from 'react';
-import {toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
 import Menu from '../menu/Menu'; 
-import Footer from '../footer/Footer'; 
 import Header from '../header/Header';
+
+//validaciones
+
+//axios conexion
+import axios from 'axios';
+
+//toast
+import {ToastContainer,toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 //css propio
 import './add.css';
@@ -14,7 +20,6 @@ import {useDropzone} from 'react-dropzone'
 //material ui
 import {makeStyles} from '@material-ui/core/styles';
 
-import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import {TextField} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -58,11 +63,12 @@ const useStyles = makeStyles((theme) => ({
 const baseUrl = "http://localhost:3001/documento"
 
 
-toast.configure()
-function Add () {
+
+function Add() {
 
 	const styles= useStyles();
 	const [data, setData] = useState ([]);
+
 
 	const notifysuccess = () => {
 		toast.success('El Archivo Ha Sido Ingresado')
@@ -72,10 +78,10 @@ function Add () {
 		nombre_documento: "",
 		tipo_documento: "", 
 		descripcion: "",
-		archivo:"",
-		
+		archivo:"",			
 	  })  
-	
+
+
 	const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
 		maxFiles:1,
 		maxSize:5000000, 
@@ -100,12 +106,17 @@ function Add () {
 		await axios.post(baseUrl, documentoSeleccionado)
 		.then(response=>{
 		  setData(data.concat(response.data));
-		   window.location.href="/documentos";
+		  window.location.href="/documents";
 		}).catch(error=>{
 		  console.log(error);
-		  window.location.href="/documentos";
 		})
 	  }  
+
+
+      const handleSubmit=e=>{
+		  e.prevenDefault();		
+		  e.target.reset();
+	  }
 
 return(
  
@@ -117,14 +128,15 @@ return(
 	         	    <div>
 					 <div className="text-center col-md-12"><h3>INGRESO DE DOCUMENTO</h3></div>
 					 <br/>
-					<br/>   
-		         	    <Form className="row" >  		    					  
+					<br/>
+					<Form className="row" onSubmit={handleSubmit}>   		    					  
 							      <div className="form-group col-md-6"> 
 									<TextField className={styles.inputMaterial} label="Nombre del Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary" required/>
-							      </div>  
+							      </div>
+								
 							        <br />
 									<div className="form-group col-md-6"> 
-								   <TextField className={styles.TextareaAutosize} label="Descripcion" name="descripcion" variant="outlined" multiline rows={2} onChange={handleChange} color="primary" required/>
+								   <TextField className={styles.TextareaAutosize} label="Descripcion" name="descripcion" variant="outlined" multiline rows={2} onChange={handleChange} color="primary" required/> 
 							      </div> 
 							      <div className="form-group col-md-6"> 
 							     	<label >Tipo de Documento</label> 
@@ -150,15 +162,16 @@ return(
 												<ul>file</ul>
 												<ul>{archivo}</ul>
 											</aside>		
-							       </div> 
+							       </div>  
 								   <div className="form-group col-md-12"> 
 							      </div>
 								  <br/>
 								  <div className="form-group col-md-12"> 
 							      </div>
 								  <br/>
-								   <div className="form-group col-md-6" onClick={notifysuccess}>
-							        <Button variant="contained" color="primary" size="large"  onClick={()=>peticionPost()} startIcon={<SaveIcon />}>Guardar</Button>  	
+								   <div className="form-group col-md-6" onClick={notifysuccess || notifysuccess }>
+								   <ToastContainer />
+							        <Button variant="contained" color="primary" size="large" type="submit" onClick={()=>peticionPost()} startIcon={<SaveIcon />}>Guardar</Button>  	
 									</div>
 									<br/>
 								   <div className="form-group col-md-6">
@@ -168,7 +181,6 @@ return(
 				      <br/>
 				    </div>  
                 </div>
-          <Footer />	
 	</>
  
  )
@@ -176,4 +188,5 @@ return(
  }
  
 export default Add;
+
 
