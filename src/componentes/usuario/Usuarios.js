@@ -1,11 +1,19 @@
-import React, { useEffect, useState} from 'react';
-import {ToastContainer,toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import React, { useEffect, useState, useRef} from 'react';
 import Menu from '../menu/Menu';  
 import Header from '../header/Header';
-import md5 from 'md5';
 
+//toast
+import {ToastContainer,toast,Zoom} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+//axios conexion
+import axios from 'axios';
+
+//validaciones
+import SimpleReactValidator from "simple-react-validator";
+
+//encrypt
+import md5 from 'md5';
 
 //material ui
 import MaterialTable from 'material-table';
@@ -58,9 +66,25 @@ const baseUrl = "http://localhost:3001/user"
 const useStyles = makeStyles((theme) => ({
 	modal: {
 	  position: 'absolute',
-	  width: 400,
-	  backgroundColor: theme.palette.background.paper,
-	  border: '2px solid #000',
+    width: 500,
+    height: 500,
+    overflow:'auto',
+	  backgroundColor: theme.palette.grey[500],
+	  border: '1px solid #000',
+	  boxShadow: theme.shadows[5],
+	  padding: theme.spacing(2, 4, 3),
+	  top: '50%',
+	  left: '50%',
+	  transform: 'translate(-50%, -50%)'
+  },
+  modales: {
+	  position: 'absolute',
+    width: 500,
+    height: 500,
+    overflow:'auto',
+    backgroundColor: theme.palette.grey[500],
+    text: theme.palette.text.primary,
+	  border: '1px solid #000',
 	  boxShadow: theme.shadows[5],
 	  padding: theme.spacing(2, 4, 3),
 	  top: '50%',
@@ -70,21 +94,33 @@ const useStyles = makeStyles((theme) => ({
 	iconos:{
 	  cursor: 'pointer'
   }, 
-  NativeSelect:{
-	  width: '100%'
-	},
-	inputMaterial:{
-	  width: '100%'
-  },
   Button: {
       margin: theme.spacing(1),
       cursor: 'pointer',
+  }, 
+	NativeSelect:{
+    width: '100%',
+    backgroundColor: theme.palette.common.white,
+	},
+	inputMaterial:{
+    width: '100%',
+    backgroundColor: theme.palette.common.white,
+  },
+  message:{
+    margin: 0,
+    padding: 0,
+    width: 225,
+    height: 23,
   }
   }));
 
 
 
 function Usuarios() {
+   
+  const simpleValidator = useRef(new SimpleReactValidator());
+	const [, autoForceUpdate] = useState();
+	const form = React.createRef();
 
   const notifysuccessEditar = () => {
     toast.success('Se Han Guardado Las Modificaciones')
@@ -92,6 +128,10 @@ function Usuarios() {
   
   const notifysuccessInsertar = () => {
     toast.success('Se Ha Ingresado Un Nuevo Usuario')
+  }
+  
+  const notifyfaileInsertar = () => {
+    toast.error('Intentelo de nuevo, ingrese el Usuario')
   } 
   const styles= useStyles();
   const [data, setData] = useState ([]);
@@ -101,6 +141,7 @@ function Usuarios() {
     nombres: "",
     apellidos: "", 
     cargo:"",
+    ciudad:"",
     usuario : "", 
     password:"",
     fecha_creacion: "", 
@@ -169,69 +210,171 @@ function Usuarios() {
 		peticionGet();
   }, [])
   
+  const handleSubmit=e=>{
+    e.prevenDefault();		
+  }
+
+  const handleUpdate=e=>{
+    e.prevenDefault();		
+  }
+
+  const submitForm = () => {
+	  const formValid = simpleValidator.current.allValid();
+	  if (!formValid) {
+    simpleValidator.current.showMessages(true);
+    notifyfaileInsertar();
+		autoForceUpdate(1)
+	  } else {
+    peticionPost();
+    notifysuccessInsertar();
+	  }
+  };
+  
+  const updateForm = () => {
+	  const formValid = simpleValidator.current.allValid();
+	  if (!formValid) {
+		simpleValidator.current.showMessages(true);
+		autoForceUpdate(1)
+	  } else {
+    peticionPut();
+    notifysuccessEditar();
+	  }
+	};
+
   const bodyInsertar=(
-    <div className={styles.modal}>
-      <div align="right" >
-      <CancelIcon className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}/>
-      </div>
-      <h3 className="text-center col-md-12" >Nuevo Usuario</h3>
-      <br />
-      <br />
-      <TextField className={styles.inputMaterial} label="Nombres" name="nombres" onChange={handleChange} variant="outlined" color="primary" required/>
-      <br />
-      <br />
-      <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} variant="outlined" color="primary" required/>
-      <br />
-      <br />
-      <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} required>
-										<option value="" disabled>Seleccione Cargo</option>
-										<option value="ADMIN">ADMIN</option>
-                    <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
-										<option value="JEFE">JEFE</option>
-			</NativeSelect>        
-      <br />
-      <br />
-	<TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" required/>
-		<br /><br />
-    <TextField type="password" className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" required/>
-		<br />
-    <br />
-		<div align="center"  onClick={notifysuccessInsertar}>
-			<Button className={styles.Button}  variant="contained" color="primary" onClick={()=>peticionPost()}><PresentToAllIcon/></Button>
-		<ToastContainer />
-    </div>
-		</div>
+    <form className="row" ref={form} onSubmit={handleSubmit}>
+        <div className={styles.modal} >
+          <h3 className="text-center col-md-12" >Nuevo Usuario</h3>
+          <br />
+          <br />
+          <TextField className={styles.inputMaterial} label="Nombres" name="nombres" onChange={handleChange} variant="outlined" color="primary"	
+          onBlur={() => {
+							simpleValidator.current.showMessageFor("nombres")
+							autoForceUpdate(1);
+							}}/>
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "required|nombres")}
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "alpha_space|nombres")}
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "max:200|nombres")}
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "min:10|nombres")}      
+          <br />
+          <br />
+          <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} variant="outlined" color="primary"          
+           onBlur={() => {
+							simpleValidator.current.showMessageFor("apellidos")
+							autoForceUpdate(1);
+							}}/>
+             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "required|apellidos")}
+             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "alpha_space|apellidos")}  
+             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "max:200|apellidos")} 
+             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "min:10|apellidos")}
+          <br />
+          <br />
+          <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} 
+          onBlur={() => {
+							simpleValidator.current.showMessageFor("cargo")
+							autoForceUpdate(1);
+							}}>   
+                        <option value="">Seleccione Cargo</option>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+                        <option value="JEFE">JEFE</option>
+          </NativeSelect>
+          {simpleValidator.current.message("cargo", usuarioSeleccionado.cargo, "required|cargo")}         
+          <br />
+          <br />
+      <TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" 
+      onBlur={() => {
+							simpleValidator.current.showMessageFor("usuario")
+							autoForceUpdate(1);
+							}}/>
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "required|usuario")}
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "min:5|usuario")}
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "max:15|usuario")}
+        <br /><br />
+        <TextField type="password" className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" 
+        onBlur={() => {
+							simpleValidator.current.showMessageFor("password")
+							autoForceUpdate(1);
+							}}/>
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "required|password")}
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "min:10|password")}
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "max:15|password")}
+        <br />
+        <div align="center">
+          <Button className={styles.Button}  variant="contained" color="primary" type="submit" onClick={submitForm}><PresentToAllIcon/></Button>
+          <Button  className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}><CancelIcon/></Button>
+        </div>
+        </div>
+    </form>
   )
   
   const bodyEditar=(
-    <div className={styles.modal}>
-      <div align="right">
-      <CancelIcon className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}/>
-      </div>
-      <h3 className="text-center col-md-12">Modificar Usuario</h3>
+    <form className="row" ref={form} onSubmit={handleUpdate}>
+        <div className={styles.modales}>
+          <h3 className="text-center col-md-12">Modificar Usuario</h3>
+          <br />
+          <br />
+          <TextField className={styles.inputMaterial} label="Nombres" name="nombres"  onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.nombres}           
+          onBlur={() => {
+							simpleValidator.current.showMessageFor("nombres")
+							autoForceUpdate(1);
+							}}/>
+               {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "required|nombres")}
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "alpha_space|nombres")}
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "max:200|nombres")}
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "min:10|nombres")}
+          <br />
+          <br />
+          <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.apellidos} variant="outlined" color="primary" 
+          onBlur={() => {
+							simpleValidator.current.showMessageFor("apellidos")
+							autoForceUpdate(1);
+							}}/>
+              {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "required|apellidos")}
+             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "alpha_space|apellidos")}  
+             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "max:200|apellidos")} 
+             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "min:10|apellidos")}
+          <br />
+          <br />
+          <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.cargo} 
+          onBlur={() => {
+							simpleValidator.current.showMessageFor("apellidos")
+							autoForceUpdate(1);
+							}}>
+                        <option value="" disabled>Seleccione Cargo</option>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+                        <option value="JEFE">JEFE</option>
+          </NativeSelect> 
+          {simpleValidator.current.message("cargo", usuarioSeleccionado.cargo, "required|cargo")}       
       <br />
       <br />
-      <TextField className={styles.inputMaterial} label="Nombre Documento" name="nombres"  onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.nombres} required/>
-      <br />
-      <br />
-      <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.apellidos} variant="outlined" color="primary" required/>
-      <br />
-      <br />
-      <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.cargo} required>
-                    <option value="" disabled>Seleccione Cargo</option>
-										<option value="ADMIN">ADMIN</option>
-                    <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
-										<option value="JEFE">JEFE</option>
-			</NativeSelect>        
-	<br />
-  <br />
-	<TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.usuario} required/>
-		<br /><br />
-		<div align="center" onClick={notifysuccessEditar}>
-    <ToastContainer />
-			<Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
-		</div>
-		</div>
+      <TextField className={styles.inputMaterial} label="Usuario" name="usuario" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.usuario} 
+            onBlur={() => {
+							simpleValidator.current.showMessageFor("usuario")
+							autoForceUpdate(1);
+							}}/>
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "required|usuario")}
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "min:5|usuario")}
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "max:15|usuario")}
+        <br /><br />
+        <TextField type="password" className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.password}
+        onBlur={() => {
+							simpleValidator.current.showMessageFor("password")
+							autoForceUpdate(1);
+							}}/>
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "required|password:10")}
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "min:10|password")}
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "max:45|password")}
+        <br />
+        
+        <div align="center">    
+          <Button className={styles.Button} variant="contained" color="primary" onClick={updateForm} ><PresentToAllIcon/></Button>
+          <Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}><CancelIcon /></Button>
+        </div>
+        </div>
+      </form>
+  
 	)
 
     return (
@@ -245,7 +388,7 @@ function Usuarios() {
          	    <MaterialTable 
          	    	columns = {columnas}
                  data= {data}
-         	    	title = "Usuarios Ingresados"
+         	    	title = "USUARIOS"
                     localization={{
                         header: {
                             actions: 'ACCION'
@@ -264,6 +407,7 @@ function Usuarios() {
          	    />                  
                      
                 </div> 
+                <ToastContainer draggable={false} transition={Zoom} autoClose={5000} />
 
         <Modal
         open={modalInsertar}

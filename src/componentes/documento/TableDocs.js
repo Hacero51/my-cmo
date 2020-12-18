@@ -1,9 +1,15 @@
-import React, { useEffect, useState} from 'react';
-import {ToastContainer,toast} from 'react-toastify';
+import React, { useEffect, useState, useRef} from 'react';
+import {ToastContainer,toast, Zoom} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
-//material ui
+import {
+	BrowserRouter as Router,
+	Route,
+  } from 'react-router-dom';
+//validaciones
+import SimpleReactValidator from "simple-react-validator";
+  //material ui
 import MaterialTable from 'material-table';
 import {makeStyles} from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
@@ -20,7 +26,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 //mui form
 import Form from 'muicss/lib/react/form';
 
-let Folder;
 
 const columnas = [
 	{
@@ -69,24 +74,27 @@ const baseUrl = "http://localhost:3001/documento"
 const useStyles = makeStyles((theme) => ({
 	modal: {
 	  position: 'absolute',
-	  width: 400,
-	  backgroundColor: theme.palette.background.paper,
+    width: 500,
+    height: 450,
+    overflow:'auto',
+	  backgroundColor: theme.palette.grey[500],
 	  border: '1px solid #000',
 	  boxShadow: theme.shadows[5],
 	  padding: theme.spacing(2, 4, 3),
 	  top: '50%',
 	  left: '50%',
-	  transform: 'translate(-50%, -50%)'
+	  transform: 'translate(-55%, -50%)'
 	},
 	iconos:{
     cursor: 'pointer',
   }, 
   NativeSelect:{
-	  width: '100%'
+    width: '100%',
+    backgroundColor: theme.palette.common.white,
 	},
 	inputMaterial:{
     width: '100%',
-    color: theme.color,
+    backgroundColor: theme.palette.common.white,
   },
   Button: {
       margin: theme.spacing(1),
@@ -95,8 +103,8 @@ const useStyles = makeStyles((theme) => ({
   archivo: {
     position: 'absolute',
     width: 900,
-    height:580,
-	  backgroundColor: theme.palette.background.paper,
+    height:590,
+    backgroundColor: theme.palette.grey[500],
 	  border: '1px solid #000',
 	  boxShadow: theme.shadows[3],
 	  padding: theme.spacing(2, 4, 3),
@@ -107,6 +115,67 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 function TableDocs() {
+
+  const simpleValidator = useRef(new SimpleReactValidator());
+	const [, autoForceUpdate] = useState();
+	const form = React.createRef();
+
+  const routes = [
+	  {
+    path: '/docsinfraestructura',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE INFRAESTRUCTURA</div>,
+
+	  },
+	  {
+		path: '/docsinterdependencia',
+		sidebar: () => <div>DOCUMENTOS DE INTERDEPENDENCIA</div>,
+	  },
+	  {
+		path: '/docsdotacion',
+		sidebar: () => <div>DOCUMENTOS DE DOTACION</div>,
+	  },
+	  {
+		path: '/docsth',
+		sidebar: () => <div>DOCUMENTOS DE TALENTO HUMANO</div>,
+	  },
+	  {
+		path: '/docspp',
+		sidebar: () => <div>DOCUMENTOS DE PROCESOS PRIORITARIOS</div>,
+	  },
+	  {
+		path: '/docshc',
+		sidebar: () => <div>DOCUMENTOS DE HISTORIAS CLINICAS</div>,
+	  },
+	  {
+		path: '/docsmd',
+    sidebar: () => <div>DOCUMENTOS DE MEDICAMENTOS & DISPOSITIVOS</div>,
+	  },
+	  {
+		path: '/docsaa',
+    sidebar: () => <div>DOCUMENTOS DE ACTAS ADMINISTRATIVAS</div>,
+	  },
+	  {
+		path: '/docsc',
+		sidebar: () => <div>DOCUMENTOS DE COMITE</div>,
+	  },
+	  {
+		path: '/docscap',
+		sidebar: () => <div>DOCUMENTOS DE CAPACITACIONES</div>,
+	  },
+	  {
+		path: '/docse',
+		sidebar: () => <div>DOCUMENTOS DE EVALUACIONES</div>,
+	  },
+	  {
+		path: '/docsr',
+		sidebar: () => <div>DOCUMENTOS DE REPORTES</div>,
+	  },
+	  {
+		path: '/docsa',
+		sidebar: () => <div>DOCUMENTOS DE AUDITORIAS INTERNAS</div>,
+	  },
+	]
  
   const notifysuccessEditar = () => {
     toast.success('Se Han Guardado Las Modificaciones')
@@ -120,6 +189,7 @@ const [modalArchivo, setModalArchivo]= useState(false);
 const [documentoSeleccionado, setDocumentoSeleccionado]=useState({
   nombre_documento: "",
   tipo_documento: "", 
+  categoria:"",
   descripcion:"",
   archivo:"",
   fecha_ingreso : "", 
@@ -154,6 +224,7 @@ const peticionPut=async()=>{
         documento.nombre_documento=documentoSeleccionado.nombre_documento;
         documento.tipo_documento=documentoSeleccionado.tipo_documento;
         documento.descripcion=documentoSeleccionado.descripcion;
+        documento.categoria=documentoSeleccionado.categoria;
       }
     });
     setData(dataNueva);
@@ -163,6 +234,20 @@ const peticionPut=async()=>{
   })
 }
 
+const handleUpdate=e=>{
+  e.prevenDefault();		
+}
+
+const updateForm = () => {
+  const formValid = simpleValidator.current.allValid();
+  if (!formValid) {
+  simpleValidator.current.showMessages(true);
+  autoForceUpdate(1)
+  } else {
+  peticionPut();
+  notifysuccessEditar();
+  }
+};
 
 const seleccionarDocumento=(documento, caso)=>{
   setDocumentoSeleccionado(documento);
@@ -201,35 +286,75 @@ useEffect (()=>{
 }, [])
 
 const bodyEditar=(
-   <Form className="row" > 
+  <form className="row" ref={form} onSubmit={handleUpdate}>
   <div className={styles.modal}>
-  <div align="right">
-    <CancelIcon className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()} />
-   </div>
     <h3 className="text-center col-md-12">Modificar Documento</h3>
         <br />
         <br />
-        <TextField className={styles.inputMaterial} label="Nombre Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.nombre_documento} required/>
+        <TextField className={styles.inputMaterial} label="Nombre Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.nombre_documento}          
+         onBlur={() => {
+							simpleValidator.current.showMessageFor("nombre_documento")
+							autoForceUpdate(0);
+							}}/>
+               {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "required|nombre_documento")}
+              {simpleValidator.current.message("nombre_documentoes", documentoSeleccionado.nombre_documento, "alpha_space|nombre_documento")}
+              {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "max:100|nombre_documento")}
+              {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "min:15|nombre_documento")}
         <br />
         <br />
-        <NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} value={documentoSeleccionado&&documentoSeleccionado.tipo_documento} required>
-                      <option value="" disabled>Seleccione Tipo Documento</option>
+        <NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} value={documentoSeleccionado&&documentoSeleccionado.tipo_documento}          onBlur={() => {
+							simpleValidator.current.showMessageFor("tipo_documento")
+							autoForceUpdate(0);
+							}}>
+                      <option value="">Seleccione Tipo Documento</option>
                       <option value="pdf">PDF</option>
                       <option value="excel">Excel</option>
                       <option value="ppt">Power Point</option>
                       <option value="word">Word</option>
                       <option value="jpg">Jpg</option>
-        </NativeSelect>        
+        </NativeSelect>
+        {simpleValidator.current.message("tipo_documento", documentoSeleccionado.tipo_documento, "required|tipo_documento")}      
     <br />
     <br />
-    <TextField className={styles.inputMaterial} label="Descripcion" name="descripcion" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.descripcion} required/>
+    <TextField className={styles.inputMaterial} label="Descripcion" name="descripcion" onChange={handleChange} variant="outlined" color="primary" value={documentoSeleccionado&&documentoSeleccionado.descripcion}          
+    onBlur={() => {
+							simpleValidator.current.showMessageFor("descripcion")
+							autoForceUpdate(0);
+							}}/>
+               {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "required|descripcion")}
+              {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "alpha_space|descripcion")}
+              {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "max:150|descripcion")}
+              {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "min:10|descripcion")}
       <br /><br />
-      <div align="center" onClick={notifysuccessEditar}>
+      <NativeSelect className={styles.NativeSelect} name="categoria"  displayEmpty color="primary" onChange={handleChange} value={documentoSeleccionado&&documentoSeleccionado.categoria}  
+													onBlur={() => {
+														simpleValidator.current.showMessageFor("categoria")
+														autoForceUpdate(0);
+														}}>
+													<option value="">Seleccione Categoria</option>
+													<option value="Interdependencia">Interdependencia</option>
+													<option value="Infraestructura">Infraestructura</option>
+													<option value="Dotacion">Dotacion</option>
+													<option value="Talento Humano">Talento Humano</option>
+													<option value="Procesos Prioritarios">Procesos Prioritarios</option>
+													<option value="Historias Clinicas">Historias Clinicas</option>
+													<option value="Medicamentos y Dispotivos">Medicamentos y Dispotivos</option>
+													<option value="Actas Administrativas">Actas Administrativas</option>
+													<option value="Comites">Comites</option>
+													<option value="Capacitaciones">Capacitaciones</option>
+													<option value="Evaluaciones">Evaluaciones</option>
+													<option value="Reportes">Reportes</option>
+													<option value="Auditorias Internas">Auditorias Internas</option>
+													</NativeSelect>
+													{simpleValidator.current.message("categoria", documentoSeleccionado.categoria, "required|categoria")}
+      <br /><br />
+      <div align="center">
       <ToastContainer />
-        <Button className={styles.Button} variant="contained" color="primary" onClick={()=>peticionPut()}><PresentToAllIcon/></Button>
-      </div>       
+        <Button className={styles.Button} variant="contained" color="primary" onClick={updateForm}><PresentToAllIcon/></Button>
+        <Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}><CancelIcon/></Button>
+      </div>     
     </div>
-  </Form>  
+    </form> 
 )
 
 const bodyDescripcion=(
@@ -246,9 +371,8 @@ const bodyDescripcion=(
 const bodyArchivo=(
   <div className={styles.archivo}>
     <div align="right">
-      <CancelIcon className={styles.Button} variant="contained" color="secondary"  onClick={()=>abrirCerrarModalArchivo()}/>
+      <Button className={styles.Button} variant="contained" color="secondary"  onClick={()=>abrirCerrarModalArchivo()}><CancelIcon /></Button>
     </div>
-    <br />
   <div>
       <embed src={documentoSeleccionado.archivo}  type="application/pdf" accept= '.jpg,.pptx,.odp,.odt,.ods,.odg,image/png,image/jpeg,.pdf,.xlsx,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document' width="850px" height="500px" label="No se puede visualizar este tipo de archivo."/>
       <br />       
@@ -263,6 +387,11 @@ const bodyArchivo=(
     <MaterialTable 
         columns = {columnas}
          data= {data}
+         title = {routes.map((route) => (
+          <Route key={route.path} path={route.path} exact={route.exact}>  
+              <route.sidebar />																							
+          </Route>
+        ))}
        localization={{
            header: {
                actions: 'ACCIONES'
@@ -290,6 +419,7 @@ const bodyArchivo=(
             ]}
     />                  
    </div>
+   <ToastContainer draggable={false} transition={Zoom} autoClose={5000} />
            <Modal
            open={modalEditar}
            onClose={abrirCerrarModalEditar}>

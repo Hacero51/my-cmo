@@ -18,33 +18,38 @@ import { autoPlay } from 'react-swipeable-views-utils';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
-const tutorialSteps = [
+const slider = [
   {
     imgPath:
-      'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
+      '../slider/1.jpg',
   },
   {
     imgPath:
-      'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
+      '../slider/2.jpg',
   },
   {
     imgPath:
-      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
+      '../slider/3.jpg',
   },
   {
     imgPath:
-      'https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60',
+      '../slider/4.jpg',
   },
   {
     imgPath:
-      'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
+      '../slider/5.jpg',
+  },
+  {
+    imgPath:
+      '../slider/6.jpg',
   },
 ];
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 900,
+    maxWidth: 1000,
     flexGrow: 1,
+    height: 500,
   },
   header: {
     display: 'flex',
@@ -54,9 +59,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
   },
   img: {
-    height: 475,
+    height: 500,
     display: 'block',
-    maxWidth: 700,
+    maxWidth: 1000,
     overflow: 'hidden',
     width: '100%',
   },
@@ -66,7 +71,7 @@ function Dashboard() {
        const classes = useStyles();
        const theme = useTheme();
        const [activeStep, setActiveStep] = React.useState(0);
-       const maxSteps = tutorialSteps.length;
+       const maxSteps = slider.length;
      
        const handleNext = () => {
          setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -86,8 +91,7 @@ function Dashboard() {
  
 	 <Menu /> 
          <Header/>
-                <Container maxWidth="sm">
-                <hr className="featurette-divider" />
+         <div className="container">
               <div className={classes.root}>
                      <Paper square elevation={0} className={classes.header}>
                      </Paper>
@@ -97,7 +101,7 @@ function Dashboard() {
                             onChangeIndex={handleStepChange}
                             enableMouseEvents
                      >
-                            {tutorialSteps.map((step, index) => (
+                            {slider.map((step, index) => (
                             <div key={step.label}>
                             {Math.abs(activeStep - index) <= 2 ? (
                                    <img className={classes.img} src={step.imgPath} alt={step.label} />
@@ -124,7 +128,7 @@ function Dashboard() {
                             }
                      />
               </div>
-                </Container>
+                </div>
 	 
  </>
  

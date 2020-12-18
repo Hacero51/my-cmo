@@ -7,11 +7,13 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import GroupIcon from '@material-ui/icons/Group';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import DnsTwoToneIcon from '@material-ui/icons/DnsTwoTone';
-import DescriptionIcon from '@material-ui/icons/Description';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 import {makeStyles} from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
+import green from '@material-ui/core/colors/green';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import RadioButtonCheckedOutlinedIcon from '@material-ui/icons/RadioButtonCheckedOutlined';
 
 import './menu.css';
 
@@ -56,11 +58,23 @@ function Menu() {
 	   <>
 	    <div id="main-wrapper" position="fixed">
 	        <aside className="left-sidebar">
-	        	<div className="d-flex no-block nav-text-box align-items-center">
+			<div className="d-flex no-block nav-text-box align-items-center">
                 	<span><img src="logo-icon.png" alt=""></img></span>
                 	<a className="waves-effect waves-dark ml-auto hidden-sm-down" href="javascript:void(0)"></a>
                 	<a className="nav-toggler waves-effect waves-dark ml-auto hidden-sm-up" href="javascript:void(0)"></a>
 						<MenuRoundedIcon style={{ color: grey[50] }}/>
+            	</div>
+	        	<div className="d-flex no-block nav-text-box align-items-center">					
+						<div class="user-panel">
+							<div class="pull-left-info">
+							<h5 className="name-user">Alexander Pierce</h5>
+							<a href="#"><RadioButtonCheckedOutlinedIcon style={{ color: green[600] }}/>Online</a>
+							</div>
+    					</div>
+						<a className="waves-effect waves-dark ml-auto hidden-sm-down" href="javascript:void(0)"></a>
+                		<a className="nav-toggler waves-effect waves-dark ml-auto hidden-sm-up" href="javascript:void(0)"></a>
+						<a className="nav-toggler waves-effect waves-dark ml-auto hidden-sm-up" href="javascript:void(0)"></a>
+						<AccountCircleIcon style={{ color: grey[50] }} />
             	</div>
 	            <div className="scroll-sidebar">
 	                <nav className="sidebar-nav">

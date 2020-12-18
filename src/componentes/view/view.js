@@ -22,10 +22,6 @@ import {TextField} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
 import SaveIcon from '@material-ui/icons/Save';
-import CancelIcon from '@material-ui/icons/Cancel';
-
-//mui form
-import Form from 'muicss/lib/react/form';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,9 +56,6 @@ const useStyles = makeStyles((theme) => ({
 const baseUrl = "http://localhost:3001/documento"
 
 function SimpleReactValidatorComponent() {
-  
-  const [email, setEmail] = useState("");
-  const [nombre, setNombre] = useState("");
   const simpleValidator = useRef(new SimpleReactValidator());
   const [, forceUpdate] = useState();
   const form = React.createRef();
@@ -119,8 +112,6 @@ function SimpleReactValidatorComponent() {
 		  e.target.reset();
     }
     
-
-
   const submitForm = () => {
     const formValid = simpleValidator.current.allValid();
     if (!formValid) {
@@ -139,31 +130,6 @@ function SimpleReactValidatorComponent() {
     <br/>
     <br/>
       <form className="row" ref={form} onSubmit={handleSubmit}>
-        <label>Email</label>
-        <TextField
-          name="email"
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => {
-            simpleValidator.current.showMessageFor("email")
-            forceUpdate(1);
-          }}
-        />
-        {simpleValidator.current.message("email", email, "required|email")}
-        <label>Nombre</label>
-        <TextField
-          name="nombre"
-          type="text"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          onBlur={() => {
-            simpleValidator.current.showMessageFor("nombre")
-            forceUpdate(1);
-          }}
-        />
-        {simpleValidator.current.message("nombre", nombre, "required|nombre")}
-
         <div className="form-group col-md-6"> 
                   <TextField className={styles.inputMaterial} label="Nombre del Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary"   
                       onBlur={() => {
@@ -174,11 +140,20 @@ function SimpleReactValidatorComponent() {
 							      </div>
 							        <br />
 									<div className="form-group col-md-6"> 
-								   <TextField className={styles.TextareaAutosize} label="Descripcion" name="descripcion" variant="outlined" multiline rows={2} onChange={handleChange} color="primary" required/> 
+								   <TextField className={styles.TextareaAutosize} label="Descripcion" name="descripcion" variant="outlined" multiline rows={2} onChange={handleChange} color="primary" 
+								   onBlur={() => {
+									simpleValidator.current.showMessageFor("descripcion")
+									forceUpdate(1);
+						        	}}/>
+									 {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "required|descripcion")}
 							      </div> 
 							      <div className="form-group col-md-6"> 
 							     	<label >Tipo de Documento</label> 
-										<NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} required>
+										<NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} 
+										onBlur={() => {
+											simpleValidator.current.showMessageFor("tipo_documento")
+											forceUpdate(1);
+											}}>
 										<option value="" disabled>Seleccione</option>
 										<option value="pdf">PDF</option>
 										<option value="excel">Excel</option>
@@ -186,12 +161,17 @@ function SimpleReactValidatorComponent() {
 										<option value="word">Word</option>
 										<option value="imagen">Imagen</option>
 										</NativeSelect>
+										{simpleValidator.current.message("tipo_documento", documentoSeleccionado.tipo_documento, "required|tipo_documento")}
 							      </div> 
 							       <br/>
 							       <br/>
 									<div className="form-group col-md-6"> 
 											<div {...getRootProps({className: 'dropzone'})}>
-												<input {...getInputProps()}  name='archivo' onChange={handleChange} required/>
+												<input {...getInputProps()}  name='archivo' onChange={handleChange} 
+												onBlur={() => {
+												simpleValidator.current.showMessageFor("archivo")
+												forceUpdate(1);
+												}}/>
 												<p>Arrastre y suelte el archivo aquí, o haga clic para seleccionar el archivo</p>
 												<em>(Solo *.jpg y *.png son el tipo de Imagenes aceptadas)
 												(Solo *.pdf,*.pptx,.xlsx,.doc son los tipos de Documentos aceptadas)</em>
@@ -199,7 +179,8 @@ function SimpleReactValidatorComponent() {
 											<aside>
 												<ul>file</ul>
 												<ul>{archivo}</ul>
-											</aside>		
+											</aside>
+											{simpleValidator.current.message("archivo", documentoSeleccionado.archivo, "required|archivo")}		
 							       </div>  
 								   <div className="form-group col-md-12"> 
 							      </div>

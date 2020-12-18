@@ -7,9 +7,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.name-user{
+  margin: 0px;
+  color: #fff7f7;
+}
+.pull-left-info {
+  color: rgb(255, 249, 249);
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.srv-validation-message{
+ color: #f50000
+}
+
+.MuiInputBase-input.Mui-disabled{
+  opacity: 1;
+  color: black;
+}
+
+h6{
+  color: #080808;
 }
 
 thead{
@@ -34,9 +54,19 @@ tfoot {
     vertical-align: middle;
     border-color: inherit;
     text-align: center;
-    background-color: #4eff345c
+    background-color: #22ff005c
 }
 
+.title-cmo {
+  margin: 0px;
+  color: #000000;
+  
+}
+
+.title-table {
+  margin: 0px;
+  color: #000000;
+}
 .btns {
     display: inline-block;
     font-weight: 400;
@@ -12097,7 +12127,7 @@ Main sidebar
 sidebar navigation
 ******************/
 .scroll-sidebar {
-  height: calc(100% *1.1);
+  height: calc(100% *1.2);
   position: relative;
   background-color: #2b2f3a;
   /*&.ps .ps__scrollbar-y-rail {

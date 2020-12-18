@@ -45,7 +45,7 @@ function Header() {
 	  {
 		path: '/usuarios',
 		sidebar: () => <div><Link color="inherit" href="/usuarios" onClick={handleClick}  className={classes.link} >
-		<DnsTwoToneIcon  className={classes.icon}/>USUARIOS
+		<GroupIcon  className={classes.icon}/>USUARIOS
 		</Link></div>,
 	  }, 
 	  {
@@ -151,7 +151,7 @@ function Header() {
 	            <div className="container-fluid">
 	                <div className="row page-titles">
 	                    <div className="col-md-5 align-self-center">
-	                        <h4 className="text-themecolor">DAHSBOARD CMO</h4>
+	                        <h4 className="title-cmo">DAHSBOARD CMO</h4>
 	                    </div>
 	                    <div className="col-md-7 align-self-center text-right">
 	                        <div className="d-flex justify-content-end align-items-center">

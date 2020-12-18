@@ -18,7 +18,7 @@ a {
 	font-family: Montserrat-Regular;
 	font-size: 14px;
 	line-height: 1.7;
-	color: #666666;
+	color: #f8f9fa;
 	margin: 0px;
 	transition: all 0.4s;
 	-webkit-transition: all 0.4s;
@@ -32,19 +32,21 @@ a:focus {
 
 a:hover {
 	text-decoration: none;
-  color: #b8bbbd;
+  color: #f8f9fa;
 }
 
 /*---------------------------------------------*/
 h1,h2,h3,h4,h5,h6 {
-	margin: 0px;
+  margin: 0px;
+  color: #000000;
+  
 }
 
 p {
 	font-family: Montserrat-Regular;
 	font-size: 14px;
 	line-height: 1.7;
-	color: #666666;
+	color: #f8f9fa;
 	margin: 0px;
 }
 
@@ -110,7 +112,7 @@ iframe {
 .txt1 {
   font-family: Montserrat-Regular;
   font-size: 16px;
-  color: #cccccc;
+  color: #0a6afb;
   line-height: 1.4;
 }
 
@@ -160,7 +162,7 @@ iframe {
   height: 100%;
   top: 0;
   left: 0;
-  background: #005bea;
+  background: #ffffff00;
   background: -webkit-linear-gradient(bottom, #005bea, #00c6fb);
   background: -o-linear-gradient(bottom, #005bea, #00c6fb);
   background: -moz-linear-gradient(bottom, #005bea, #00c6fb);
@@ -294,7 +296,7 @@ iframe {
 }
 
 .input100:focus + .focus-input100 + .symbol-input100 {
-  color: #00c6fb;
+  color: #fb1100;
   padding-left: 23px;
 }
 
