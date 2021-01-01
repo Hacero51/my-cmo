@@ -150,17 +150,14 @@ return(
 				<div className="text-center col-md-12"><h3>INGRESO DE DOCUMENTO</h3></div>
 				<br/>
 				<br/>
-				<form className="row" ref={form} onSubmit={handleSubmit}>
+				<form className="row" ref={form} onSubmit={handleSubmit} enctype="multipart/form-data">
 					<div className="form-group col-md-6"> 
 							<TextField className={styles.inputMaterial} label="Nombre del Documento" name="nombre_documento" onChange={handleChange} variant="outlined" color="primary"   
 								onBlur={() => {
 								simpleValidator.current.showMessageFor("nombre_documento")
 								autoForceUpdate(0);
 								}}/>
-								{simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "required|nombre_documento")}
-								{simpleValidator.current.message("nombre_documentoes", documentoSeleccionado.nombre_documento, "alpha_space|nombre_documento")}
-                                {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "max:100|nombre_documento")}
-                                {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "min:15|nombre_documento")}
+								{simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento,"required|nombre_documento|min:15|max:100|alpha_space")}
 											</div>
 												<br />
 												<div className="form-group col-md-6"> 
@@ -169,10 +166,7 @@ return(
 												simpleValidator.current.showMessageFor("descripcion")
 												autoForceUpdate(0);
 												}}/>
-												{simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "required|descripcion")}
-												{simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "alpha_space|descripcion")}
-              									{simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "max:150|descripcion")}
-             									 {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "min:10|descripcion")}
+												{simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "required|descripcion|min:10|max:150|alpha_space")}
 											</div> 
 											<div className="form-group col-md-6"> 
 												<label >Tipo de Documento</label> 
@@ -217,8 +211,10 @@ return(
 													{simpleValidator.current.message("categoria", documentoSeleccionado.categoria, "required|categoria")}
 											</div> 
 											<br/>
+											<br/>
 											<div className="form-group col-md-2"> 
 											</div>
+											<br/>
 											<br/>
 												<div className="form-group col-md-8"> 
 														<div {...getRootProps({className: 'dropzone'})}>

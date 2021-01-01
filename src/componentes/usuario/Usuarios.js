@@ -21,6 +21,9 @@ import {makeStyles} from '@material-ui/core/styles';
 
 import {Modal, TextField, Button} from '@material-ui/core';
 import NativeSelect from '@material-ui/core/NativeSelect';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
@@ -48,6 +51,11 @@ const columnas = [
   {
 		title: 'CARGO',
 		field: 'cargo'
+
+  },
+  {
+		title: 'CIUDAD',
+		field: 'ciudad'
 
 	},
 	{
@@ -143,7 +151,7 @@ function Usuarios() {
     cargo:"",
     ciudad:"",
     usuario : "", 
-    password:"",
+    password: "" ,
     fecha_creacion: "", 
   })  
 
@@ -165,7 +173,7 @@ function Usuarios() {
   }
 
   const peticionPost=async()=>{
-    await axios.post(baseUrl, usuarioSeleccionado,)
+    await axios.post(baseUrl,usuarioSeleccionado,)
     .then(response=>{
       setData(data.concat(response.data));
       abrirCerrarModalInsertar();
@@ -175,7 +183,7 @@ function Usuarios() {
   }
 
   const peticionPut=async()=>{
-    await axios.put(baseUrl+"/"+usuarioSeleccionado.id, usuarioSeleccionado)
+    await axios.put(baseUrl+"/"+usuarioSeleccionado.id, usuarioSeleccionado, {password: md5(usuarioSeleccionado.password)} )
     .then(response=>{
       var dataNueva= data;
       dataNueva.map(usuario=>{
@@ -183,7 +191,9 @@ function Usuarios() {
           usuario.nombres=usuarioSeleccionado.nombres;
           usuario.apellidos=usuarioSeleccionado.apellidos;
           usuario.cargo=usuarioSeleccionado.cargo;
+          usuario.ciudad=usuarioSeleccionado.ciudad;
           usuario.usuario=usuarioSeleccionado.usuario;
+          usuario.password=usuarioSeleccionado.password;
         }
       });
       setData(dataNueva);
@@ -252,10 +262,7 @@ function Usuarios() {
 							simpleValidator.current.showMessageFor("nombres")
 							autoForceUpdate(1);
 							}}/>
-              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "required|nombres")}
-              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "alpha_space|nombres")}
-              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "max:200|nombres")}
-              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "min:10|nombres")}      
+          {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres,"required|nombres|min:10|max:200|alpha_space")}   
           <br />
           <br />
           <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} variant="outlined" color="primary"          
@@ -263,10 +270,19 @@ function Usuarios() {
 							simpleValidator.current.showMessageFor("apellidos")
 							autoForceUpdate(1);
 							}}/>
-             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "required|apellidos")}
-             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "alpha_space|apellidos")}  
-             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "max:200|apellidos")} 
-             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "min:10|apellidos")}
+            {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "required|apellidos|alpha_space|max:200|min:10")}
+          <br />
+          <br />
+          <NativeSelect className={styles.NativeSelect} name="ciudad"  displayEmpty color="primary" onChange={handleChange} 
+          onBlur={() => {
+							simpleValidator.current.showMessageFor("ciudad")
+							autoForceUpdate(1);
+							}}>   
+                        <option value="">Seleccione Ciudad</option>
+                        <option value="GIRARDOT">GIRARDOT</option>
+                        <option value="IBAGUE">IBAGUE</option>
+          </NativeSelect>
+          {simpleValidator.current.message("ciudad", usuarioSeleccionado.ciudad, "required|ciudad")}         
           <br />
           <br />
           <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} 
@@ -287,18 +303,14 @@ function Usuarios() {
 							simpleValidator.current.showMessageFor("usuario")
 							autoForceUpdate(1);
 							}}/>
-              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "required|usuario")}
-              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "min:5|usuario")}
-              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "max:15|usuario")}
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "required|usuario|min:5|max:15")}
         <br /><br />
-        <TextField type="password" className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" 
+        <TextField type="password" className={styles.inputMaterial} label="Password"  name="password" onChange={handleChange} variant="outlined" color="primary" 
         onBlur={() => {
 							simpleValidator.current.showMessageFor("password")
 							autoForceUpdate(1);
 							}}/>
-              {simpleValidator.current.message("password", usuarioSeleccionado.password, "required|password")}
-              {simpleValidator.current.message("password", usuarioSeleccionado.password, "min:10|password")}
-              {simpleValidator.current.message("password", usuarioSeleccionado.password, "max:15|password")}
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "required|password|min:10|max:45")}
         <br />
         <div align="center">
           <Button className={styles.Button}  variant="contained" color="primary" type="submit" onClick={submitForm}><PresentToAllIcon/></Button>
@@ -319,10 +331,7 @@ function Usuarios() {
 							simpleValidator.current.showMessageFor("nombres")
 							autoForceUpdate(1);
 							}}/>
-               {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "required|nombres")}
-              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "alpha_space|nombres")}
-              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "max:200|nombres")}
-              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres, "min:10|nombres")}
+              {simpleValidator.current.message("nombres", usuarioSeleccionado.nombres,"required|nombres|min:10|max:200|alpha_space")}
           <br />
           <br />
           <TextField className={styles.inputMaterial} label="Apellidos" name="apellidos" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.apellidos} variant="outlined" color="primary" 
@@ -330,18 +339,27 @@ function Usuarios() {
 							simpleValidator.current.showMessageFor("apellidos")
 							autoForceUpdate(1);
 							}}/>
-              {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "required|apellidos")}
-             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "alpha_space|apellidos")}  
-             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "max:200|apellidos")} 
-             {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "min:10|apellidos")}
+              {simpleValidator.current.message("apellidos", usuarioSeleccionado.apellidos, "required|apellidos|alpha_space|max:200|min:10")}
+          <br />
+          <br />
+          <NativeSelect className={styles.NativeSelect} name="ciudad"  displayEmpty color="primary" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.ciudad}
+          onBlur={() => {
+							simpleValidator.current.showMessageFor("ciudad")
+							autoForceUpdate(1);
+							}}>   
+                        <option value="">Seleccione Ciudad</option>
+                        <option value="GIRARDOT">GIRARDOT</option>
+                        <option value="IBAGUE">IBAGUE</option>
+          </NativeSelect>
+          {simpleValidator.current.message("ciudad", usuarioSeleccionado.ciudad, "required|ciudad")}  
           <br />
           <br />
           <NativeSelect className={styles.NativeSelect} name="cargo"  displayEmpty color="primary" onChange={handleChange} value={usuarioSeleccionado&&usuarioSeleccionado.cargo} 
           onBlur={() => {
-							simpleValidator.current.showMessageFor("apellidos")
+							simpleValidator.current.showMessageFor("cargo")
 							autoForceUpdate(1);
 							}}>
-                        <option value="" disabled>Seleccione Cargo</option>
+                        <option value="" >Seleccione Cargo</option>
                         <option value="ADMIN">ADMIN</option>
                         <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
                         <option value="JEFE">JEFE</option>
@@ -354,20 +372,15 @@ function Usuarios() {
 							simpleValidator.current.showMessageFor("usuario")
 							autoForceUpdate(1);
 							}}/>
-              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "required|usuario")}
-              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "min:5|usuario")}
-              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "max:15|usuario")}
+              {simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "required|usuario|min:5|max:15")}
         <br /><br />
         <TextField type="password" className={styles.inputMaterial} label="Password" name="password" onChange={handleChange} variant="outlined" color="primary" value={usuarioSeleccionado&&usuarioSeleccionado.password}
         onBlur={() => {
 							simpleValidator.current.showMessageFor("password")
 							autoForceUpdate(1);
 							}}/>
-              {simpleValidator.current.message("password", usuarioSeleccionado.password, "required|password:10")}
-              {simpleValidator.current.message("password", usuarioSeleccionado.password, "min:10|password")}
-              {simpleValidator.current.message("password", usuarioSeleccionado.password, "max:45|password")}
-        <br />
-        
+              {simpleValidator.current.message("password", usuarioSeleccionado.password, "required|password|min:10|max:45")}
+        <br />   
         <div align="center">    
           <Button className={styles.Button} variant="contained" color="primary" onClick={updateForm} ><PresentToAllIcon/></Button>
           <Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}><CancelIcon /></Button>
@@ -383,9 +396,10 @@ function Usuarios() {
        		<Header/>
            <div className="container">    
                  <br/>
-				 <Button variant="contained" color="secondary" onClick={()=>abrirCerrarModalInsertar()}><GroupAddIcon/></Button>
+				 <Button variant="contained" placeholder="Crear Usuario" color="secondary" onClick={()=>abrirCerrarModalInsertar()}><GroupAddIcon/></Button>
 				 <br/><br/>
-         	    <MaterialTable 
+               <MaterialTable 
+               scroll
          	    	columns = {columnas}
                  data= {data}
          	    	title = "USUARIOS"
@@ -395,6 +409,7 @@ function Usuarios() {
                         },
                     }} 
                     options={{
+                        
                         actionsColumnIndex: -1,
                         }}    
          	    	actions ={[

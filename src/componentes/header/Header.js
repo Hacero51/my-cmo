@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
 	BrowserRouter as Router,
 	Route,
@@ -25,6 +25,19 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(0.5),
     width: 20,
     height: 20,
+  },
+  modal: {
+	position: 'absolute',
+  width: 500,
+  height: 500,
+  overflow:'auto',
+	backgroundColor: theme.palette.grey[500],
+	border: '1px solid #000',
+	boxShadow: theme.shadows[5],
+	padding: theme.spacing(2, 4, 3),
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)'
   },
 }));
   
@@ -140,7 +153,6 @@ function Header() {
 	  },
 	]
 
-	
  return(
  
 	 <>
@@ -164,7 +176,7 @@ function Header() {
 												<Link color="inherit" href="/dashboard" onClick={handleClick}  className={classes.link}>
 												<DashboardIcon className={classes.icon}/>DAHSBOARD
 												</Link>
-												<route.sidebar />												
+												<route.sidebar />											
 											</Breadcrumbs>											
 										</Route>
 									))}

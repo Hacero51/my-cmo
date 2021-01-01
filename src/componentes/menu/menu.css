@@ -3,3 +3,11 @@
     align-items: center;
  }   
   
+.footer{
+    color: #fefeff;
+    background-color: #222d32;
+    font-family: Montserrat-Regular;
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 0px;
+} 

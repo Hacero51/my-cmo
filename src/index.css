@@ -668,7 +668,7 @@ pre {
   padding-right: 10px;
   padding-left: 10px;
   margin-right: 100px;
-  margin-left: 200px; }
+  margin-left: 0px; }
 
 @media (min-width: 576px) {
   .container, .container-sm {
@@ -680,7 +680,8 @@ pre {
 
 @media (min-width: 992px) {
   .container, .container-sm, .container-md, .container-lg {
-    max-width: 960px; } }
+    max-width: 960px;
+    margin-left: 70px; } }
 
 @media (min-width: 1600px) {
   .container, .container-sm, .container-md, .container-lg, .container-xl {
@@ -12113,7 +12114,7 @@ Main sidebar
   left: -200px;
   z-index: 50;
   padding-top: 0px;
-  background: #2b2f3a;
+  background: #222d32;
   -webkit-box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
   box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
   -webkit-transition: 0.3s ease-in;
@@ -12127,9 +12128,9 @@ Main sidebar
 sidebar navigation
 ******************/
 .scroll-sidebar {
-  height: calc(100% *1.2);
+  height: calc(100% *1.3);
   position: relative;
-  background-color: #2b2f3a;
+  background-color: #222d32;
   /*&.ps .ps__scrollbar-y-rail {
         left: 2px;
         right: auto;
@@ -12873,7 +12874,7 @@ ul.list-inline li {
   overflow: hidden; }
 
 .page-wrapper {
-  background: #edf1f5;
+  background: #82b1ff;
   position: relative;
   -webkit-transition: 0.2s ease-in;
   -o-transition: 0.2s ease-in;

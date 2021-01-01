@@ -13,16 +13,16 @@
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
     "axios": "^0.21.0",
-    "bcryptjs": "^2.4.3",
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "material-table": "^1.69.2",
     "md5": "^2.3.0",
-    "muicss": "^0.10.2",
     "popper.js": "^1.16.1",
     "react": "^17.0.1",
+    "react-chrono": "^1.8.3",
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
+    "react-image-timeline": "^3.2.13",
     "react-material-ui-form-validator": "^2.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
@@ -32,8 +32,7 @@
     "react-toastify": "^6.2.0",
     "simple-react-validator": "^1.6.0",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^0.2.4",
-    "yup": "^0.32.8"
+    "web-vitals": "^0.2.4"
   },
   "scripts": {
     "start": "react-scripts start",

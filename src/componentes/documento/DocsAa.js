@@ -3,14 +3,19 @@ import Menu from '../menu/Menu';
 import Header from '../header/Header';
 import TableDocs from '../documento/TableDocs';
 
-function Documentos() {
+export const UrlAaContext = React.createContext()
+export const UrlaaContext = React.createContext()
+
+function DocsAa() {
 
 return(
  
 	 <>
 	 	 <Menu /> 
          	<Header/>
-          <TableDocs/>
+			 <UrlAaContext.Provider value={'http://localhost:3001/documento'}>
+			   <TableDocs/>
+			 </UrlAaContext.Provider>
 	</>
  
  )
@@ -18,6 +23,4 @@ return(
 }
  
 
-
-
-export default Documentos;
+export default DocsAa;

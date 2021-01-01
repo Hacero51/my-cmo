@@ -2,10 +2,8 @@ import React from 'react';
 import Menu from '../menu/Menu'; 
 import Header from '../header/Header';
 
-//material ui
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+//crono-notificaciones
+import { Chrono } from "react-chrono";
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
@@ -15,6 +13,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
+import { CenterFocusStrong } from '@material-ui/icons';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -47,13 +46,13 @@ const slider = [
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 1000,
+    maxWidth: 800,
+    margin:0,
     flexGrow: 1,
     height: 500,
   },
   header: {
     display: 'flex',
-    alignItems: 'center',
     height: 20,
     paddingLeft: theme.spacing(4),
     backgroundColor: theme.palette.background.default,
@@ -61,11 +60,41 @@ const useStyles = makeStyles((theme) => ({
   img: {
     height: 500,
     display: 'block',
-    maxWidth: 1000,
+    maxWidth: 800,
     overflow: 'hidden',
     width: '100%',
   },
 }));
+
+
+  const items = [
+    {
+    title: "ENERO 2021",
+    cardTitle: "Hojas de vida",
+    cardSubtitle:"Reunion compuestos",
+    }, 
+    {
+    title: "FEBRERO 2021",
+    cardTitle: "FMMKSMDMSD",
+    cardSubtitle:"DFDFDFDFDFDFDFDFDFDFD",
+    },
+    {
+    title: "MARZO 2021",
+    cardTitle: "DFDFDFDFDFD",
+    cardSubtitle:"DDFDFDFDFDFDFDFDFDFDFD",
+    }, 
+    {
+    title: "ABRIL 2021",
+    cardTitle: "SSDSDSDSD",
+    cardSubtitle:"DSDFFSFSSFSFSFGRGTNTHRSFER",
+    },
+    {
+    title: "MAYO 2021",
+    cardTitle: "FDFNFJBENFNEF",
+    cardSubtitle:"DFNENFKEKNENDKS",
+    },     
+          
+  ];
 
 function Dashboard() {
        const classes = useStyles();
@@ -84,6 +113,8 @@ function Dashboard() {
        const handleStepChange = (step) => {
          setActiveStep(step);
        };
+
+
  
  return(
  
@@ -92,7 +123,17 @@ function Dashboard() {
 	 <Menu /> 
          <Header/>
          <div className="container">
-              <div className={classes.root}>
+           <br/>
+         <div>
+          <h6>Documentos Pendientes</h6>
+          <br/>
+              <div style={{ width: "1140px", height: "220px" }}>
+                  <Chrono items={items} slideShow slideItemDuration={4500} theme={{primary: "red", secondary: "white", cardBgColor: "blue", cardForeColor: "yellow" }}/>               
+              </div>
+          </div>
+          <br/>
+           <div align="center">
+              <div className={classes.root} align="center">
                      <Paper square elevation={0} className={classes.header}>
                      </Paper>
                      <AutoPlaySwipeableViews
@@ -127,8 +168,13 @@ function Dashboard() {
                             </Button>
                             }
                      />
+                    </div>
+ 
               </div>
-                </div>
+              <br/>
+                    <br/>
+
+              </div>
 	 
  </>
  

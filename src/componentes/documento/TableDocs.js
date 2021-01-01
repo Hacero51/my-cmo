@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef, useContext} from 'react';
+import { UrlAaContext, UrlaaContext } from './DocsAa';
 import {ToastContainer,toast, Zoom} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
@@ -12,7 +13,7 @@ import SimpleReactValidator from "simple-react-validator";
   //material ui
 import MaterialTable from 'material-table';
 import {makeStyles} from '@material-ui/core/styles';
-import grey from '@material-ui/core/colors/grey';
+
 
 import {Modal, TextField, Button} from '@material-ui/core';
 import NativeSelect from '@material-ui/core/NativeSelect';
@@ -22,10 +23,6 @@ import EditSharpIcon from '@material-ui/icons/EditSharp';
 import ModeCommentIcon from '@material-ui/icons/ModeComment';
 import PresentToAllIcon from '@material-ui/icons/PresentToAll';
 import CancelIcon from '@material-ui/icons/Cancel';
-
-//mui form
-import Form from 'muicss/lib/react/form';
-
 
 const columnas = [
 	{
@@ -69,7 +66,7 @@ const columnas = [
 	},
 ];
 
-const baseUrl = "http://localhost:3001/documento"
+
 
 const useStyles = makeStyles((theme) => ({
 	modal: {
@@ -111,72 +108,203 @@ const useStyles = makeStyles((theme) => ({
 	  top: '52%',
 	  left: '50%',
 	  transform: 'translate(-50%, -50%)'
+  },
+  descripcion: {
+    position: 'absolute',
+    width: 400,
+    height:180,
+    backgroundColor: theme.palette.grey[500],
+	  border: '1px solid #000',
+	  boxShadow: theme.shadows[3],
+	  padding: theme.spacing(2, 4, 3),
+	  top: '52%',
+	  left: '50%',
+	  transform: 'translate(-50%, -50%)'
   }
   }));
-
 function TableDocs() {
+  
+ //constantes url
 
-  const simpleValidator = useRef(new SimpleReactValidator());
-	const [, autoForceUpdate] = useState();
-	const form = React.createRef();
+ const baseUrlAa = useContext(UrlAaContext)
+ const baseUrlI = useContext(UrlaaContext)
+ const baseUrlIA   = useContext(UrlaaContext)
+ const baseUrlD   = useContext(UrlaaContext)
+ const baseUrlTH   = useContext(UrlaaContext)
+ const baseUrlPP    = useContext(UrlaaContext)
+ const baseUrlHC    = useContext(UrlaaContext)
+ const baseUrlMD    = useContext(UrlaaContext)
+ const baseUrlC   = useContext(UrlaaContext)
+ const baseUrlCP  = useContext(UrlaaContext)
+ const baseUrlE  = useContext(UrlaaContext)
+ const baseUrlR  = useContext(UrlaaContext)
+ const baseUrlAI  = useContext(UrlaaContext)
+
+ const apis = [
+  {
+  path: '/docsinfraestructura',
+  exact: true,
+  url: baseUrlI,
+  },
+  {
+  path: '/docsinterdependencia',
+  exact: true,
+  
+  url: baseUrlIA,
+  },
+  {
+  path: '/docsdotacion',
+  exact: true,
+  url: baseUrlD,
+  },
+  {
+  path: '/docsth',
+  exact: true,
+  url: baseUrlTH,
+  },
+  {
+  path: '/docspp',
+  exact: true,
+  url: baseUrlPP,
+  },
+  {
+  path: '/docshc',
+  exact: true,
+  url: baseUrlHC,
+  },
+  {
+  path: '/docsmd',
+  exact: true,
+  url: baseUrlMD,
+  },
+  {
+  path: '/docsaa',
+  exact: true,
+  url:  baseUrlAa,
+  },
+  {
+  path: '/docsc',
+  exact: true,
+  url: baseUrlC,
+  },
+  {
+  path: '/docscap',
+  exact: true,
+  url: baseUrlCP,
+  },
+  {
+  path: '/docse',
+  exact: true,
+  url: baseUrlE,
+  },
+  {
+  path: '/docsr',
+  exact: true,
+  url: baseUrlR,
+  },
+  {
+  path: '/docsa',
+  exact: true,
+  url: baseUrlAI,
+  },
+] 
 
   const routes = [
 	  {
     path: '/docsinfraestructura',
     exact: true,
-    sidebar: () => <div>DOCUMENTOS DE INFRAESTRUCTURA</div>,
-
+    sidebar: () => <div>DOCUMENTOS DE INFRAESTRUCTURA</div>,  
+    url: baseUrlI,
 	  },
 	  {
-		path: '/docsinterdependencia',
-		sidebar: () => <div>DOCUMENTOS DE INTERDEPENDENCIA</div>,
+    path: '/docsinterdependencia',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE INTERDEPENDENCIA</div>,
+    url: baseUrlIA,
 	  },
 	  {
-		path: '/docsdotacion',
-		sidebar: () => <div>DOCUMENTOS DE DOTACION</div>,
+    path: '/docsdotacion',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE DOTACION</div>,
+    url: baseUrlD,
 	  },
 	  {
-		path: '/docsth',
-		sidebar: () => <div>DOCUMENTOS DE TALENTO HUMANO</div>,
+    path: '/docsth',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE TALENTO HUMANO</div>,
+    url: baseUrlTH,
 	  },
 	  {
-		path: '/docspp',
-		sidebar: () => <div>DOCUMENTOS DE PROCESOS PRIORITARIOS</div>,
+    path: '/docspp',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE PROCESOS PRIORITARIOS</div>,
+    url: baseUrlPP,
 	  },
 	  {
-		path: '/docshc',
-		sidebar: () => <div>DOCUMENTOS DE HISTORIAS CLINICAS</div>,
+    path: '/docshc',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE HISTORIAS CLINICAS</div>,
+    url: baseUrlHC,
 	  },
 	  {
-		path: '/docsmd',
+    path: '/docsmd',
+    exact: true,
     sidebar: () => <div>DOCUMENTOS DE MEDICAMENTOS & DISPOSITIVOS</div>,
+    url: baseUrlMD,
 	  },
 	  {
-		path: '/docsaa',
+    path: '/docsaa',
+    exact: true,
     sidebar: () => <div>DOCUMENTOS DE ACTAS ADMINISTRATIVAS</div>,
+    url:  {baseUrlAa},
 	  },
 	  {
-		path: '/docsc',
-		sidebar: () => <div>DOCUMENTOS DE COMITE</div>,
+    path: '/docsc',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE COMITE</div>,
+    url: baseUrlC,
 	  },
 	  {
-		path: '/docscap',
-		sidebar: () => <div>DOCUMENTOS DE CAPACITACIONES</div>,
+    path: '/docscap',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE CAPACITACIONES</div>,
+    url: baseUrlCP,
 	  },
 	  {
-		path: '/docse',
-		sidebar: () => <div>DOCUMENTOS DE EVALUACIONES</div>,
+    path: '/docse',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE EVALUACIONES</div>,
+    url: baseUrlE,
 	  },
 	  {
-		path: '/docsr',
-		sidebar: () => <div>DOCUMENTOS DE REPORTES</div>,
+    path: '/docsr',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE REPORTES</div>,
+    url: baseUrlR,
 	  },
 	  {
-		path: '/docsa',
-		sidebar: () => <div>DOCUMENTOS DE AUDITORIAS INTERNAS</div>,
+    path: '/docsa',
+    exact: true,
+    sidebar: () => <div>DOCUMENTOS DE AUDITORIAS INTERNAS</div>,
+    url: baseUrlAI,
 	  },
-	]
- 
+  ]
+
+  var baseUrl = apis.map((route) => (
+    console.dir(apis),
+    console.dir(route),
+    <Route key={route.path} path={route.path} exact={route.exact}>  	
+        <route.url/>
+        {console.dir(route.url)}																							
+    </Route>
+ ))
+console.dir(baseUrl);
+
+
+  const simpleValidator = useRef(new SimpleReactValidator());
+	const [, autoForceUpdate] = useState();
+  const form = React.createRef();
+  
   const notifysuccessEditar = () => {
     toast.success('Se Han Guardado Las Modificaciones')
   }  
@@ -206,7 +334,7 @@ const handleChange=e=>{
   }));
 }
 
-  const peticionGet =async(props)=>{
+  const peticionGet =async()=>{
     await axios.get(baseUrl)
     .then(response=>{
       setData(response.data);
@@ -349,7 +477,6 @@ const bodyEditar=(
 													{simpleValidator.current.message("categoria", documentoSeleccionado.categoria, "required|categoria")}
       <br /><br />
       <div align="center">
-      <ToastContainer />
         <Button className={styles.Button} variant="contained" color="primary" onClick={updateForm}><PresentToAllIcon/></Button>
         <Button className={styles.Button} variant="contained" color="secondary" onClick={()=>abrirCerrarModalEditar()}><CancelIcon/></Button>
       </div>     
@@ -358,9 +485,9 @@ const bodyEditar=(
 )
 
 const bodyDescripcion=(
-  <div className={styles.modal}>
+  <div className={styles.descripcion}>
     <div align="right">
-      <CancelIcon className={styles.Button} variant="contained" color="secondary"  onClick={()=>abrirCerrarModalDescripcion()}/>
+      <Button className={styles.Button} variant="contained" color="secondary"  onClick={()=>abrirCerrarModalDescripcion()}><CancelIcon/></Button>
     </div>
     <label>DESCRIPCION</label>
    <TextField className={styles.inputMaterial}  name="descripcion" onChange={handleChange} variant="outlined" color="secondary"  value={documentoSeleccionado.descripcion} disabled/>
@@ -380,16 +507,17 @@ const bodyArchivo=(
 
   </div>
 )
+
  return(
    <>
     <div className="container">    
     <br/><br/>
-    <MaterialTable 
+    <MaterialTable      
         columns = {columnas}
          data= {data}
-         title = {routes.map((route) => (
+         title= {routes.map((route) => (
           <Route key={route.path} path={route.path} exact={route.exact}>  
-              <route.sidebar />																							
+              <route.sidebar/>																	
           </Route>
         ))}
        localization={{
@@ -398,6 +526,7 @@ const bodyArchivo=(
            },
        }} 
        options={{
+           doubleHorizontalScroll: true,
            actionsColumnIndex: -1,
            }}    
         actions ={[
@@ -407,18 +536,19 @@ const bodyArchivo=(
        onClick: (event, rowData)=>seleccionarDescripcion(rowData,"Descripcion")
      },
      {
-                icon:() => <VisibilityIcon />,
-                tooltip: 'Ver Documento',
-                onClick: (event, rowData)=>seleccionarArchivo(rowData,"Ver Documento")
+      icon:() => <VisibilityIcon />,
+      tooltip: 'Ver Documento',
+      onClick:  (event, rowData)=>seleccionarArchivo(rowData,"Ver Documento")
       },
       {
        icon: () => <EditSharpIcon />, 
        tooltip: 'Editar',
        onClick: (event, rowData)=> seleccionarDocumento(rowData, "Editar")
      },
-            ]}
+    ]}
     />                  
    </div>
+   
    <ToastContainer draggable={false} transition={Zoom} autoClose={5000} />
            <Modal
            open={modalEditar}
@@ -435,7 +565,7 @@ const bodyArchivo=(
            onClose={abrirCerrarModalArchivo}>
              {bodyArchivo}
            </Modal>
-   
+
      </>
    
  )

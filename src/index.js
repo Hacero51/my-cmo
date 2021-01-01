@@ -32,8 +32,6 @@ import DocsR from './componentes/documento/DocsRep';
 import DocsA from './componentes/documento/DocsAuI';
 
 
-import View from './componentes/view/View';
-
 ReactDOM.render(
 		<Router>
 				 <BrowserRouter>
@@ -44,7 +42,6 @@ ReactDOM.render(
 						<Route exact path='/usuarios' component={Usuarios} />
 						<Route exact path='/documents' component={DocsOpcion} />
 						<Route exact path='/add' component={Add} />
-						<Route exact path='/view' component={View} />
 						<Route exact path='/docsinfraestructura' component={DocsInfraestructura} />
 						<Route exact path='/docsinterdependencia' component={DocsInterdependencia} />
 						<Route exact path='/docsdotacion' component={DocsDotacion} />
@@ -58,7 +55,6 @@ ReactDOM.render(
 						<Route exact path='/docse' component={DocsE} />
 						<Route exact path='/docsr' component={DocsR} />
 						<Route exact path='/docsa' component={DocsA} />
-
 					</Switch>
 				  </BrowserRouter>
 	    </Router>,

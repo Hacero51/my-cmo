@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 
 //material ui
 import Grid from '@material-ui/core/Grid';
@@ -44,15 +44,13 @@ function Menu() {
 		cookies.remove('password', {path: "/"});
         cookies.remove('usuario', {path: "/"});
         window.location.href='/';
-    }
- 
- 	console.log('id: '+ cookies.get('id'));
-	console.log('apellidos: '+cookies.get('apellidos'));
-	console.log('nombres: '+cookies.get('nombres'));
-	console.log('cargo: '+cookies.get('cargo'));
-	console.log('ciudad: '+cookies.get('ciudad'));
-	console.log('usuario: '+cookies.get('usuario'));
-	console.log('password: '+cookies.get('password'));	 	 
+	} 	 
+	
+	useEffect(() => {
+		if(!cookies.get('usuario')){
+			window.location.href='/';
+		}
+	   });
  
    return (
 	   <>
@@ -67,8 +65,16 @@ function Menu() {
 	        	<div className="d-flex no-block nav-text-box align-items-center">					
 						<div class="user-panel">
 							<div class="pull-left-info">
-							<h5 className="name-user">Alexander Pierce</h5>
-							<a href="#"><RadioButtonCheckedOutlinedIcon style={{ color: green[600] }}/>Online</a>
+							<Grid container className={classes.root}>
+										<Grid item xs={1}>
+										</Grid>
+										<Grid item xs={9}>
+										<h5 className="name-user">{(cookies.get('nombres'))}<br/>{(cookies.get('apellidos'))}</h5>
+										</Grid>
+										<Grid item xs={30}>
+										<a><RadioButtonCheckedOutlinedIcon style={{ color: green[600] }}/>Online</a>
+										</Grid>
+							</Grid>		
 							</div>
     					</div>
 						<a className="waves-effect waves-dark ml-auto hidden-sm-down" href="javascript:void(0)"></a>
@@ -160,22 +166,14 @@ function Menu() {
 							<br/><br/>	
 							<br/>
 							<div>	
-								<p>&copy; {(new Date().getFullYear())} Cmo, IPS. &middot; <a href="https://clinicamatropolitanacmo.com/">Clinica Metropolitana</a> </p>		
-							</div>
-
-							
+								<p className="footer" >&copy; {(new Date().getFullYear())} Cmo, IPS. &middot; <a href="https://clinicamatropolitanacmo.com/">Clinica Metropolitana</a> </p>		
+							</div>				
 	                </nav>
-
 	            </div>
 	        </aside>
 		</div>
-
 	</>	
-		
-		          
- 
    )
-    
 }
  
 export default Menu;

@@ -4,7 +4,7 @@
 
 * {
 	margin: 0px; 
-	padding: 0px; 
+  padding: 0px; 
 	box-sizing: border-box;
 }
 
@@ -46,9 +46,11 @@ p {
 	font-family: Montserrat-Regular;
 	font-size: 14px;
 	line-height: 1.7;
-	color: #f8f9fa;
+	color: #1b1e21;
 	margin: 0px;
 }
+
+
 
 ul, li {
 	margin: 0px;

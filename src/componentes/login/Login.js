@@ -92,8 +92,19 @@ function Login(){
 	} else {
 		iniciarSesion();
 	}
-   };
+   };       
+   
+
+
+
+
 	 
+   useEffect(() => {
+		if(cookies.get('usuario')){
+		window.location.href="/dashboard";
+	}	
+	});
+
  return(
 
 		<div className="limiter">
@@ -109,8 +120,8 @@ function Login(){
 							<br />
 							
 							<form className="row" ref={form} onSubmit={handleSubmit}>
-								<div>
-									<TextField className="input100" type="text" name="usuario" label="Usuario" onChange={handleChange} color="primary" variant="outlined"
+								<div className="wrap-input100 validate-input m-b-10">
+									<input className="input100" type="text" name="usuario" label="Usuario" onChange={handleChange} 
 										onBlur={() => {
 										simpleValidator.current.showMessageFor("usuario")
 										autoForceUpdate(0);
@@ -123,7 +134,7 @@ function Login(){
 									{simpleValidator.current.message("usuario", usuarioSeleccionado.usuario, "max:15|usuario")}
 								</div>
 								<div className="wrap-input100 validate-input m-b-10">
-									<TextField className="input100" type="password" name="password" label="Contraseña" onChange={handleChange} color="primary"  variant="outlined"
+									<input className="input100" type="password" name="password" label="Contraseña" onChange={handleChange}   
 									      onBlur={() => {
 											simpleValidator.current.showMessageFor("password")
 											autoForceUpdate(0);
@@ -142,11 +153,6 @@ function Login(){
 									</button>
 								</div>
 							</form>
-							<div className="text-center w-full p-t-25 p-b-230">
-								<a href="#" className="txt1">
-									Olvido Usuario/ Contraseña?
-								</a>
-							</div>
 						</form>
 					</div>
 				</div>
