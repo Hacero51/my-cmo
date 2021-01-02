@@ -126,179 +126,77 @@ function TableDocs() {
   
  //constantes url
 
- const baseUrlAa = useContext(UrlAaContext)
- const baseUrlI = useContext(UrlaaContext)
- const baseUrlIA   = useContext(UrlaaContext)
- const baseUrlD   = useContext(UrlaaContext)
- const baseUrlTH   = useContext(UrlaaContext)
- const baseUrlPP    = useContext(UrlaaContext)
- const baseUrlHC    = useContext(UrlaaContext)
- const baseUrlMD    = useContext(UrlaaContext)
- const baseUrlC   = useContext(UrlaaContext)
- const baseUrlCP  = useContext(UrlaaContext)
- const baseUrlE  = useContext(UrlaaContext)
- const baseUrlR  = useContext(UrlaaContext)
- const baseUrlAI  = useContext(UrlaaContext)
-
- const apis = [
-  {
-  path: '/docsinfraestructura',
-  exact: true,
-  url: baseUrlI,
-  },
-  {
-  path: '/docsinterdependencia',
-  exact: true,
-  
-  url: baseUrlIA,
-  },
-  {
-  path: '/docsdotacion',
-  exact: true,
-  url: baseUrlD,
-  },
-  {
-  path: '/docsth',
-  exact: true,
-  url: baseUrlTH,
-  },
-  {
-  path: '/docspp',
-  exact: true,
-  url: baseUrlPP,
-  },
-  {
-  path: '/docshc',
-  exact: true,
-  url: baseUrlHC,
-  },
-  {
-  path: '/docsmd',
-  exact: true,
-  url: baseUrlMD,
-  },
-  {
-  path: '/docsaa',
-  exact: true,
-  url:  baseUrlAa,
-  },
-  {
-  path: '/docsc',
-  exact: true,
-  url: baseUrlC,
-  },
-  {
-  path: '/docscap',
-  exact: true,
-  url: baseUrlCP,
-  },
-  {
-  path: '/docse',
-  exact: true,
-  url: baseUrlE,
-  },
-  {
-  path: '/docsr',
-  exact: true,
-  url: baseUrlR,
-  },
-  {
-  path: '/docsa',
-  exact: true,
-  url: baseUrlAI,
-  },
-] 
+// const baseUrlAa = useContext(UrlAaContext)
 
   const routes = [
 	  {
     path: '/docsinfraestructura',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE INFRAESTRUCTURA</div>,  
-    url: baseUrlI,
 	  },
 	  {
     path: '/docsinterdependencia',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE INTERDEPENDENCIA</div>,
-    url: baseUrlIA,
 	  },
 	  {
     path: '/docsdotacion',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE DOTACION</div>,
-    url: baseUrlD,
 	  },
 	  {
     path: '/docsth',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE TALENTO HUMANO</div>,
-    url: baseUrlTH,
 	  },
 	  {
     path: '/docspp',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE PROCESOS PRIORITARIOS</div>,
-    url: baseUrlPP,
 	  },
 	  {
     path: '/docshc',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE HISTORIAS CLINICAS</div>,
-    url: baseUrlHC,
 	  },
 	  {
     path: '/docsmd',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE MEDICAMENTOS & DISPOSITIVOS</div>,
-    url: baseUrlMD,
 	  },
 	  {
     path: '/docsaa',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE ACTAS ADMINISTRATIVAS</div>,
-    url:  {baseUrlAa},
 	  },
 	  {
     path: '/docsc',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE COMITE</div>,
-    url: baseUrlC,
 	  },
 	  {
     path: '/docscap',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE CAPACITACIONES</div>,
-    url: baseUrlCP,
 	  },
 	  {
     path: '/docse',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE EVALUACIONES</div>,
-    url: baseUrlE,
 	  },
 	  {
     path: '/docsr',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE REPORTES</div>,
-    url: baseUrlR,
 	  },
 	  {
     path: '/docsa',
     exact: true,
     sidebar: () => <div>DOCUMENTOS DE AUDITORIAS INTERNAS</div>,
-    url: baseUrlAI,
 	  },
   ]
 
-  var baseUrl = apis.map((route) => (
-    console.dir(apis),
-    console.dir(route),
-    <Route key={route.path} path={route.path} exact={route.exact}>  	
-        <route.url/>
-        {console.dir(route.url)}																							
-    </Route>
- ))
-console.dir(baseUrl);
+const baseUrl = 'http://localhost:3001/documento/'
 
 
   const simpleValidator = useRef(new SimpleReactValidator());
@@ -352,7 +250,6 @@ const peticionPut=async()=>{
         documento.nombre_documento=documentoSeleccionado.nombre_documento;
         documento.tipo_documento=documentoSeleccionado.tipo_documento;
         documento.descripcion=documentoSeleccionado.descripcion;
-        documento.categoria=documentoSeleccionado.categoria;
       }
     });
     setData(dataNueva);
@@ -424,10 +321,7 @@ const bodyEditar=(
 							simpleValidator.current.showMessageFor("nombre_documento")
 							autoForceUpdate(0);
 							}}/>
-               {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "required|nombre_documento")}
-              {simpleValidator.current.message("nombre_documentoes", documentoSeleccionado.nombre_documento, "alpha_space|nombre_documento")}
-              {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "max:100|nombre_documento")}
-              {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "min:15|nombre_documento")}
+               {simpleValidator.current.message("nombre_documento", documentoSeleccionado.nombre_documento, "required|nombre_documento|alpha_space|max:100|min:15")}
         <br />
         <br />
         <NativeSelect className={styles.NativeSelect} name="tipo_documento"  displayEmpty color="primary" onChange={handleChange} value={documentoSeleccionado&&documentoSeleccionado.tipo_documento}          onBlur={() => {
@@ -449,10 +343,7 @@ const bodyEditar=(
 							simpleValidator.current.showMessageFor("descripcion")
 							autoForceUpdate(0);
 							}}/>
-               {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "required|descripcion")}
-              {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "alpha_space|descripcion")}
-              {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "max:150|descripcion")}
-              {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "min:10|descripcion")}
+               {simpleValidator.current.message("descripcion", documentoSeleccionado.descripcion, "required|descripcion|alpha_space|max:150|min:10")}
       <br /><br />
       <NativeSelect className={styles.NativeSelect} name="categoria"  displayEmpty color="primary" onChange={handleChange} value={documentoSeleccionado&&documentoSeleccionado.categoria}  
 													onBlur={() => {
