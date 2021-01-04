@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef} from 'react';
 import './Login.css';
 import PersonIcon from '@material-ui/icons/Person';
 import LockIcon from '@material-ui/icons/Lock';
-import {TextField} from '@material-ui/core';
 
 //inicio sesion
 import axios from 'axios';
@@ -94,11 +93,6 @@ function Login(){
 	}
    };       
    
-
-
-
-
-	 
    useEffect(() => {
 		if(cookies.get('usuario')){
 		window.location.href="/dashboard";

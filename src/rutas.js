@@ -26,7 +26,7 @@ import DocsR from './componentes/documento/DocsRep';
 import DocsA from './componentes/documento/DocsAuI';
 
 
-function Rutas(params) {
+function Rutas() {
     return(
         <Router>
         <BrowserRouter>
